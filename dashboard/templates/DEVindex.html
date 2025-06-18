@@ -1,251 +1,340 @@
 <!DOCTYPE html>
-<html class="transition-colors duration-300">
-  <head>
-      <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-      <link
-        rel="stylesheet"
-        as="style"
-        onload="this.rel='stylesheet'"
-        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
-      />
+<html lang="en" class="scroll-smooth transition-colors duration-300">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    
+    <!-- Title and favicon -->
+    <title>Admin Dashboard - BronxBot</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/southbronx.png') }}">
+    
+    <!-- Enhanced Meta tags -->
+    <meta name="description" content="BronxBot Admin Panel - Monitor your Discord bot's performance, command usage, and server statistics in real-time.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0c7ff2">
+    
+    <!-- Fonts with better loading -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600">
+    </noscript>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,aspect-ratio" defer></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        discord: '#5865F2',
+                        'discord-hover': '#4752C4',
+                        admin: '#dc2626',
+                        'admin-hover': '#b91c1c',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-gentle': 'bounce 2s infinite',
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'scale-in': 'scaleIn 0.5s ease-out',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                        'flash': 'flash 0.8s ease-in-out',
+                        'counter': 'counter 1s ease-out',
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'admin-pattern': 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%230c7ff2" fill-opacity="0.03"%3E%3Cpath d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Prevent flash of unstyled content -->
+    <script src="{{ url_for('static', filename='js/fouc-prevention.js') }}"></script>
+    
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        @keyframes scaleIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.9); 
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1); 
+            }
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(12, 127, 242, 0.3); }
+            to { box-shadow: 0 0 30px rgba(12, 127, 242, 0.6); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes flash {
+            0% { background-color: rgba(12, 127, 242, 0.1); }
+            50% { background-color: rgba(12, 127, 242, 0.3); }
+            100% { background-color: transparent; }
+        }
+        
+        @keyframes counter {
+            from { transform: scale(1.1); opacity: 0.7; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Enhanced stat cards */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark .stat-card {
+            background: rgba(17, 24, 39, 0.9);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .dark .stat-card:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-card.flash-update {
+            animation: flash 0.8s ease-in-out;
+        }
+        
+        .counting {
+            animation: counter 1s ease-out;
+        }
+        
+        /* Admin header styling */
+        .admin-header {
+            background: linear-gradient(135deg, #0c7ff2 0%, #0a6ad1 100%);
+        }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        /* Chart enhancements */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .chart-container {
+            background: rgba(17, 24, 39, 0.9);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .chart-svg {
+            width: 100%;
+            height: 200px;
+            display: block;
+        }
+        
+        .data-point {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .data-point:hover {
+            transform: scale(1.2);
+        }
+        
+        /* Tooltip styling */
+        .chart-tooltip {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Performance indicators */
+        .performance-good { color: #10b981; }
+        .performance-warning { color: #f59e0b; }
+        .performance-critical { color: #ef4444; }
+        
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+        
+        /* Glass morphism effects */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark .glass {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Loading states */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        .dark .skeleton {
+            background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+            background-size: 200% 100%;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
 
-      <title>BronxBot Admin Panel</title>
-      <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/southbronx.png') }}">
-      
-      <!-- Meta tags -->
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="description" content="BronxBot Admin Panel - Monitor your Discord bot's performance, command usage, and server statistics in real-time.">
-
-      <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-      <script>
-          tailwind.config = {
-              darkMode: 'class',
-          }
-      </script>
-      
-      <style>
-          /* Avatar dropdown styles */
-          .dropdown-menu {
-              display: none;
-              opacity: 0;
-              transform: translateY(-10px);
-              transition: all 0.3s ease;
-          }
-          
-          .dropdown-menu.show {
-              display: block;
-              opacity: 1;
-              transform: translateY(0);
-          }
-          
-          /* Spinning avatar animation */
-          .spin-360 {
-              transition: transform 0.6s ease-in-out;
-          }
-          
-          .spin-360:hover {
-              transform: rotate(360deg);
-          }
-          
-          /* Flash animation for stat updates */
-          @keyframes flash {
-              0% { background-color: rgba(8, 126, 164, 0.2); }
-              50% { background-color: rgba(8, 126, 164, 0.5); }
-              100% { background-color: transparent; }
-          }
-          
-          .flash-update {
-              animation: flash 0.8s ease-in-out;
-          }
-          
-          /* Performance metric styling */
-          .stat-card[data-metric="latency"] {
-              border-left: 4px solid #10b981; /* Green for latency */
-          }
-          
-          .stat-card[data-metric="memory"] {
-              border-left: 4px solid #f59e0b; /* Orange for memory */
-          }
-          
-          .stat-card[data-metric="cpu"] {
-              border-left: 4px solid #ef4444; /* Red for CPU */
-          }
-          
-          /* Performance metric icons */
-          .performance-icon {
-              display: inline-block;
-              width: 20px;
-              height: 20px;
-              margin-right: 8px;
-              opacity: 0.7;
-          }
-          
-          /* Chart styling for better proportions */
-          .chart-container {
-              position: relative;
-              width: 100%;
-          }
-          
-          .chart-svg {
-              width: 100%;
-              height: 148px;
-              display: block;
-          }
-          
-          /* Ensure data points maintain circular shape */
-          .data-point {
-              vector-effect: non-scaling-stroke;
-              transform-origin: center;
-          }
-          
-          /* Fix for circle scaling */
-          .chart-svg .data-point {
-              transform: scale(1, 1);
-          }
-          
-          /* Tooltip styling */
-          
-          @keyframes flash-effect {
-              0% { 
-                  background-color: rgba(6, 182, 212, 0.2);
-                  transform: scale(1);
-              }
-              50% { 
-                  background-color: rgba(6, 182, 212, 0.4);
-                  transform: scale(1.02);
-              }
-              100% { 
-                  background-color: transparent;
-                  transform: scale(1);
-              }
-          }
-          
-          /* Number counting animation */
-          .counting {
-              transition: all 0.3s ease;
-          }
-          
-          /* Enhanced chart styling */
-          .chart-container {
-              background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-              backdrop-filter: blur(10px);
-              border: 1px solid rgba(255, 255, 255, 0.2);
-          }
-          
-          .dark .chart-container {
-              background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
-              border: 1px solid rgba(255, 255, 255, 0.1);
-          }
-          
-          /* Stat card animations */
-          .stat-card {
-              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          }
-          
-          .stat-card:hover {
-              transform: translateY(-4px);
-              box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-          }
-          
-          .dark .stat-card:hover {
-              box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-          }
-      </style>
-  </head>
-  <body>
-    <div class="relative flex size-full min-h-screen flex-col bg-slate-50 dark:bg-gray-900 group/design-root overflow-x-hidden transition-colors duration-300" style='font-family: Inter, "Noto Sans", sans-serif;'>
-        <div class="layout-container flex h-full grow flex-col">
-            <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] dark:border-b-gray-700 px-4 md:px-10 py-3 bg-white dark:bg-gray-800 transition-colors duration-300">
-                <div class="flex items-center gap-4 text-[#0d141c] dark:text-white">
-                    <!-- Dark/Light Mode Toggle -->
-                    <button id="theme-toggle" class="relative flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out transform hover:scale-105">
-                        <!-- Sun Icon (Light Mode) -->
-                        <svg id="sun-icon" class="w-5 h-5 text-yellow-500 transition-all duration-300" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+<body class="font-sans bg-slate-50 dark:bg-gray-900 bg-admin-pattern transition-colors duration-300">
+    <!-- Include the enhanced navbar -->
+    {% include 'navbar.html' %}
+    
+    <!-- Admin Alert Banner -->
+    <div class="admin-header border-b border-blue-600/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="admin-badge px-3 py-1 rounded-full text-white text-xs font-bold flex items-center gap-2">
+                        <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
-                        <!-- Moon Icon (Dark Mode) -->
-                        <svg id="moon-icon" class="w-5 h-5 text-gray-300 transition-all duration-300 hidden" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                        </svg>
-                    </button>
-                    <div class="w-6 h-6">
-                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-blue-500">
-                            <path
-                                d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"
-                                fill="currentColor"
-                            ></path>
-                        </svg>
+                        ADMIN MODE
                     </div>
-                    <div class="flex items-center gap-3">
-                        <img src="{{ url_for('static', filename='images/southbronx.png') }}" alt="BronxBot Logo" class="w-8 h-8 rounded-full">
-                        <h2 class="text-[#0d141c] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">BronxBot</h2>
+                    <span class="text-white text-sm font-medium">
+                        Advanced monitoring and control panel
+                    </span>
+                </div>
+                <div class="hidden md:flex items-center gap-4 text-white/80 text-sm">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span>System Online</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span id="current-time">Loading...</span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- Desktop navigation -->
-                <div class="hidden md:flex flex-1 justify-end gap-8">
-                    <div class="flex items-center gap-9">
-                        <a class="text-[#0c7ff2] dark:text-blue-400 text-sm font-medium leading-normal px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30" href="/">Dashboard</a>
-                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition-all duration-300" href="/servers">Servers</a>
-                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition-all duration-300" href="/faq">FAQ</a>
-                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition-all duration-300" href="https://discord.gg/jENm4phpgv">Support</a>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8 animate-fade-in">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div>
+                    <h1 class="text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-2">
+                        Welcome back, <span class="text-blue-600 dark:text-blue-400">{{ request.cookies.get('username', 'Admin') }}</span>! 👨‍💻
+                    </h1>
+                    <p class="text-lg text-gray-600 dark:text-gray-300">
+                        Monitor your bot's performance and manage critical systems
+                    </p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <!-- Quick Action Buttons -->
+                    <button onclick="refreshAllMetrics()" 
+                            class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        Refresh Data
+                    </button>
+                    <div class="flex items-center gap-2 px-4 py-2 glass rounded-xl">
+                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Live Updates</span>
                     </div>
-                    
-                    <!-- User Avatar Dropdown -->
-                    <div class="relative">
-                        <button id="user-dropdown-toggle" class="flex items-center gap-2 spin-360 focus:outline-none">
-                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-transparent hover:border-blue-400 transition-all duration-300" 
-                                 style='background-image: url("https://cdn.discordapp.com/avatars/{{ request.cookies.get("user_id") }}/{{ request.cookies.get("avatar_hash", "default") }}.png?size=64");'
-                                 title="{{ request.cookies.get('username', 'User') }}">
-                            </div>
-                        </button>
-                        
-                        <!-- Dropdown Menu -->
-                        <div id="user-dropdown-menu" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
-                            <div class="py-2">
-                                <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ request.cookies.get('username', 'User') }}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Admin Panel</p>
-                                </div>
-                                {% if request.cookies.get('user_id') %}
-                                <a href="/" class="flex items-center gap-2 px-4 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
-                                        <path d="M104,40H152a8,8,0,0,1,0,16H104a8,8,0,0,1,0-16ZM224,48V64a8,8,0,0,1-16,0V56H48v8a8,8,0,0,1-16,0V48A16,16,0,0,1,48,32H208A16,16,0,0,1,224,48ZM216,88v88a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V88A8,8,0,0,1,48,80H208A8,8,0,0,1,216,88Z"></path>
-                                    </svg>
-                                    Admin Dashboard
-                                </a>
-                                {% endif %}
-                                <a href="/settings" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
-                                        <path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3.12-3.12L186-119.55a8,8,0,0,0-3.93-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40q-2.16-.06-4.32,0L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3.12,3.12L40.45,70.05a8,8,0,0,0-6,3.93,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84q-.06,2.16,0,4.32L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.48,1.56,3.12,3.12L70,215.55a8,8,0,0,0,3.93,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3.12-3.12L215.55,186a8,8,0,0,0,6-3.93,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06ZM128,208A80,80,0,1,1,208,128,80.09,80.09,0,0,1,128,208Z"></path>
-                                    </svg>
-                                    Settings
-                                </a>
-                                <a href="/logout" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
-                                        <path d="M112,216a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h56a8,8,0,0,1,0,16H48V208h56A8,8,0,0,1,112,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L188.69,112H112a8,8,0,0,0,0,16h76.69l-18.35,18.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,221.66,122.34Z"></path>
-                                    </svg>
-                                    Log Out
-                                </a>
-                            </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Critical Stats Overview -->
+        <section class="mb-8 animate-slide-up" aria-labelledby="stats-heading">
+            <h2 id="stats-heading" class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2V7a2 2 0 012-2h2a2 2 0 002 2v2a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 00-2 2v6"/>
+                </svg>
+                System Overview
+            </h2>
+            
+            <div class="stat-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <!-- Uptime Card -->
+                <div class="stat-card rounded-2xl p-6 group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="text-xs font-medium text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">
+                            STABLE
                         </div>
                     </div>
-                </div>
-            </header>
-        <div class="px-40 flex flex-1 justify-center py-5">
-          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex flex-wrap justify-between gap-3 p-4">
-              <div class="flex min-w-72 flex-col gap-3">
-                <p class="text-[#06b6d4] dark:text-cyan-400 tracking-light text-[32px] font-bold leading-tight">Admin Panel</p>
-                <p class="text-[#5c748a] dark:text-gray-300 text-sm font-normal leading-normal">Welcome back, {{ request.cookies.get('username', 'User') }}! Here's an overview of your bot's performance and status.</p>
-              </div>
-            </div>
-            <!-- Stats Cards -->
-            <div class="flex flex-wrap gap-4 p-4">
-                <div class="stat-card flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                    <p class="text-[#0d141c] dark:text-white text-base font-medium leading-normal">Uptime</p>
-                    <p id="uptime-display" class="text-[#0d141c] dark:text-white tracking-light text-2xl font-bold leading-tight">
+                    <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">System Uptime</h3>
+                    <p id="uptime-display" class="text-2xl font-black text-gray-900 dark:text-white">
                         {% if stats and stats.uptime %}
                             {{ stats.uptime.days }}d {{ stats.uptime.hours }}h {{ stats.uptime.minutes }}m
                         {% else %}
@@ -253,600 +342,700 @@
                         {% endif %}
                     </p>
                 </div>
-                <div class="stat-card flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                    <p class="text-[#0d141c] dark:text-white text-base font-medium leading-normal">Servers Connected</p>
-                    <p id="server-count" class="text-[#0d141c] dark:text-white tracking-light text-2xl font-bold leading-tight" data-count="{% if stats and stats.guilds %}{{ stats.guilds.count }}{% else %}0{% endif %}">
-                        {% if stats and stats.guilds %}{{ stats.guilds.count }}{% else %}0{% endif %}<span class="stats-indicator"></span>
-                    </p>
-                </div>
-                <div class="stat-card flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                    <p class="text-[#0d141c] dark:text-white text-base font-medium leading-normal">Total Commands Executed</p>
-                    <p id="total-commands" class="text-[#0d141c] dark:text-white tracking-light text-2xl font-bold leading-tight" data-count="{% if stats and stats.commands %}{{ stats.commands.total_executed }}{% else %}0{% endif %}">
-                        {% if stats and stats.commands %}{{ stats.commands.total_executed | thousands }}{% else %}0{% endif %}<span class="stats-indicator"></span>
-                    </p>
-                </div>
-                <div class="stat-card flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                    <p class="text-[#0d141c] dark:text-white text-base font-medium leading-normal">Total Users</p>
-                    <p id="user-count" class="text-[#0d141c] dark:text-white tracking-light text-2xl font-bold leading-tight" data-count="{% if stats and stats.performance %}{{ stats.performance.user_count }}{% else %}0{% endif %}">
-                        {% if stats and stats.performance %}{{ stats.performance.user_count | thousands }}{% else %}0{% endif %}<span class="stats-indicator"></span>
-                    </p>
-                </div>
-                <div class="stat-card flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" data-metric="latency">
-                    <p class="text-[#0d141c] dark:text-white text-base font-medium leading-normal">
-                        Latency
-                    </p>
-                    <p class="text-[#0d141c] dark:text-white tracking-light text-2xl font-bold leading-tight" data-metric="latency" data-latency="{% if stats and stats.performance %}{{ stats.performance.latency }}{% else %}0{% endif %}">
-                        {% if stats and stats.performance %}{{ "%.1f"|format(stats.performance.latency) }}{% else %}0.0{% endif %}ms<span class="stats-indicator"></span>
-                    </p>
-                </div>
-                <div class="stat-card flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" data-metric="cpu">
-                    <p class="text-[#0d141c] dark:text-white text-base font-medium leading-normal">
-                        CPU Usage
-                    </p>
-                    <p class="text-[#0d141c] dark:text-white tracking-light text-2xl font-bold leading-tight" data-metric="cpu" data-cpu="{% if stats and stats.performance %}{{ stats.performance.cpu_usage }}{% else %}0{% endif %}">
-                        {% if stats and stats.performance %}{{ "%.1f"|format(stats.performance.cpu_usage) }}{% else %}0.0{% endif %}%<span class="stats-indicator"></span>
-                    </p>
-                </div>
-            </div>
 
-            <!-- Chart Section -->
-            <h2 class="text-[#0d141c] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Command Execution Metrics</h2>
-            <div class="flex flex-wrap gap-4 px-4 py-6">
-                <div class="chart-container flex min-w-72 flex-1 flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                    <p class="text-[#0d141c] dark:text-white text-base font-medium leading-normal">Command Execution Over Time</p>
-                    <p id="weekly-total" class="text-[#0d141c] dark:text-white tracking-light text-[32px] font-bold leading-tight truncate">Loading...</p>
-                    <div class="flex gap-1">
-                        <p class="text-[#5c748a] dark:text-gray-400 text-base font-normal leading-normal">Last 7 Days</p>
-                        <p id="percentage-change" class="text-[#078838] text-base font-medium leading-normal">Loading...</p>
+                <!-- Server Count Card -->
+                <div class="stat-card rounded-2xl p-6 group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                        </div>
+                        <div class="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded-full">
+                            ACTIVE
+                        </div>
                     </div>
-                    <div class="flex min-h-[180px] flex-1 flex-col gap-2 py-4">
-                        <!-- Y-axis labels and chart container -->
-                        <div class="flex flex-1">
-                            <!-- Y-axis -->
-                            <div class="flex flex-col justify-between w-10 text-right pr-2 text-xs text-[#5c748a] dark:text-gray-400">
-                      <span id="y-max">300</span>
-                      <span id="y-75">225</span>
-                      <span id="y-50">150</span>
-                      <span id="y-25">75</span>
-                      <span id="y-min">0</span>
-                    </div>                  <!-- Chart area -->
-                  <div class="flex-1 chart-container relative">
-                    <svg id="command-chart" class="chart-svg" width="100%" height="148" viewBox="0 0 400 148" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                        <!-- Grid lines -->
-                        <line x1="0" y1="0" x2="400" y2="0" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600"/>
-                        <line x1="0" y1="37" x2="400" y2="37" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600"/>
-                        <line x1="0" y1="74" x2="400" y2="74" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600"/>
-                        <line x1="0" y1="111" x2="400" y2="111" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600"/>
-                        <line x1="0" y1="148" x2="400" y2="148" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600"/>
-                        
-                        <!-- Data will be inserted here by JavaScript -->
-                        <path id="chart-area" fill="url(#paint0_linear)" />
-                        <path id="chart-line" stroke="#0c7ff2" stroke-width="3" stroke-linecap="round" fill="none" />
-                        
-                        <defs>
-                          <linearGradient id="paint0_linear" x1="200" y1="0" x2="200" y2="148" gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#0c7ff2" stop-opacity="0.3"></stop>
-                            <stop offset="1" stop-color="#0c7ff2" stop-opacity="0"></stop>
-                          </linearGradient>
-                        </defs>
-                      </svg>
-                    </div>
-                  </div>
-                  <!-- X-axis labels -->
-                  <div class="flex justify-around text-[#5c748a] dark:text-gray-400 text-[13px] font-bold leading-normal tracking-[0.015em] ml-10">
-                    <span id="day-0">Mon</span>
-                    <span id="day-1">Tue</span>
-                    <span id="day-2">Wed</span>
-                    <span id="day-3">Thu</span>
-                    <span id="day-4">Fri</span>
-                    <span id="day-5">Sat</span>
-                    <span id="day-6">Sun</span>
-                  </div>
+                    <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Connected Servers</h3>
+                    <p id="server-count" class="text-2xl font-black text-gray-900 dark:text-white" data-count="{% if stats and stats.guilds %}{{ stats.guilds.count }}{% else %}0{% endif %}">
+                        {% if stats and stats.guilds %}{{ stats.guilds.count }}{% else %}0{% endif %}
+                    </p>
                 </div>
-              </div>
+
+                <!-- Total Commands Card -->
+                <div class="stat-card rounded-2xl p-6 group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <div class="text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 px-2 py-1 rounded-full">
+                            24H
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Commands Executed</h3>
+                    <p id="total-commands" class="text-2xl font-black text-gray-900 dark:text-white" data-count="{% if stats and stats.commands %}{{ stats.commands.total_executed }}{% else %}0{% endif %}">
+                        {% if stats and stats.commands %}{{ stats.commands.total_executed | thousands }}{% else %}0{% endif %}
+                    </p>
+                </div>
+
+                <!-- Total Users Card -->
+                <div class="stat-card rounded-2xl p-6 group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-6 h-6 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <div class="text-xs font-medium text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-900/30 px-2 py-1 rounded-full">
+                            TOTAL
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Total Users</h3>
+                    <p id="user-count" class="text-2xl font-black text-gray-900 dark:text-white" data-count="{% if stats and stats.performance %}{{ stats.performance.user_count }}{% else %}0{% endif %}">
+                        {% if stats and stats.performance %}{{ stats.performance.user_count | thousands }}{% else %}0{% endif %}
+                    </p>
+                </div>
+
+                <!-- Latency Card -->
+                <div class="stat-card rounded-2xl p-6 group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <div id="latency-status" class="text-xs font-medium text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 px-2 py-1 rounded-full">
+                            GOOD
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">API Latency</h3>
+                    <p id="latency-display" class="text-2xl font-black text-gray-900 dark:text-white" data-latency="{% if stats and stats.performance %}{{ stats.performance.latency }}{% else %}0{% endif %}">
+                        {% if stats and stats.performance %}{{ "%.1f"|format(stats.performance.latency) }}{% else %}0.0{% endif %}ms
+                    </p>
+                </div>
+
+                <!-- CPU Usage Card -->
+                <div class="stat-card rounded-2xl p-6 group">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                            </svg>
+                        </div>
+                        <div id="cpu-status" class="text-xs font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded-full">
+                            NORMAL
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">CPU Usage</h3>
+                    <p id="cpu-display" class="text-2xl font-black text-gray-900 dark:text-white" data-cpu="{% if stats and stats.performance %}{{ stats.performance.cpu_usage }}{% else %}0{% endif %}">
+                        {% if stats and stats.performance %}{{ "%.1f"|format(stats.performance.cpu_usage) }}{% else %}0.0{% endif %}%
+                    </p>
+                </div>
             </div>
-          </div>
+        </section>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+            <!-- Command Execution Chart -->
+            <section class="chart-container rounded-2xl p-8 animate-scale-in">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Command Execution Metrics</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Real-time command usage over the last 7 days</p>
+                    </div>
+                    <div class="text-right">
+                        <p id="weekly-total" class="text-3xl font-black text-gray-900 dark:text-white">Loading...</p>
+                        <div class="flex items-center justify-end gap-2 mt-1">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Last 7 days</span>
+                            <span id="percentage-change" class="text-sm font-bold">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chart Container -->
+                <div class="relative">
+                    <div class="flex items-end justify-between h-64 mb-4">
+                        <!-- Y-axis -->
+                        <div class="flex flex-col justify-between h-full w-12 text-right pr-3 text-xs text-gray-500 dark:text-gray-400">
+                            <span id="y-max">300</span>
+                            <span id="y-75">225</span>
+                            <span id="y-50">150</span>
+                            <span id="y-25">75</span>
+                            <span id="y-min">0</span>
+                        </div>
+                        
+                        <!-- Chart area -->
+                        <div class="flex-1 h-full relative">
+                            <svg id="command-chart" class="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
+                                <!-- Grid lines -->
+                                <defs>
+                                    <linearGradient id="paint0_linear" x1="200" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="#0c7ff2" stop-opacity="0.3"></stop>
+                                        <stop offset="1" stop-color="#0c7ff2" stop-opacity="0"></stop>
+                                    </linearGradient>
+                                </defs>
+                                
+                                <line x1="0" y1="0" x2="400" y2="0" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600" opacity="0.5"/>
+                                <line x1="0" y1="50" x2="400" y2="50" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600" opacity="0.5"/>
+                                <line x1="0" y1="100" x2="400" y2="100" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600" opacity="0.5"/>
+                                <line x1="0" y1="150" x2="400" y2="150" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600" opacity="0.5"/>
+                                <line x1="0" y1="200" x2="400" y2="200" stroke="currentColor" stroke-width="1" class="text-gray-300 dark:text-gray-600" opacity="0.5"/>
+                                
+                                <!-- Data will be inserted here -->
+                                <path id="chart-area" fill="url(#paint0_linear)" />
+                                <path id="chart-line" stroke="#0c7ff2" stroke-width="3" stroke-linecap="round" fill="none" />
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- X-axis labels -->
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 ml-12">
+                        <span id="day-0">Mon</span>
+                        <span id="day-1">Tue</span>
+                        <span id="day-2">Wed</span>
+                        <span id="day-3">Thu</span>
+                        <span id="day-4">Fri</span>
+                        <span id="day-5">Sat</span>
+                        <span id="day-6">Sun</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Health Chart -->
+            <section class="chart-container rounded-2xl p-8 animate-scale-in">
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">System Health Monitor</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Real-time performance metrics and alerts</p>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- Memory Usage -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Memory Usage</span>
+                            <span id="memory-percentage" class="text-sm font-bold text-gray-900 dark:text-white">65%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                            <div id="memory-bar" class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-1000" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Network I/O -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Network I/O</span>
+                            <span id="network-speed" class="text-sm font-bold text-gray-900 dark:text-white">1.2 MB/s</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                            <div id="network-bar" class="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-1000" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Database Connections -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Database Connections</span>
+                            <span id="db-connections" class="text-sm font-bold text-gray-900 dark:text-white">12/100</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                            <div id="db-bar" class="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full transition-all duration-1000" style="width: 12%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Error Rate -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Error Rate (24h)</span>
+                            <span id="error-rate" class="text-sm font-bold text-gray-900 dark:text-white">0.02%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                            <div id="error-bar" class="bg-gradient-to-r from-yellow-500 to-red-500 h-3 rounded-full transition-all duration-1000" style="width: 2%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-wrap gap-2">
+                        <button class="px-3 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-xs font-medium transition-colors">
+                            Clear Cache
+                        </button>
+                        <button class="px-3 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-xs font-medium transition-colors">
+                            Restart Services
+                        </button>
+                        <button class="px-3 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-xs font-medium transition-colors">
+                            View Logs
+                        </button>
+                    </div>
+                </div>
+            </section>
         </div>
-      </div>
-    </div>
 
+        <!-- Recent Activity Section -->
+        <section class="chart-container rounded-2xl p-8 mb-8 animate-fade-in">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Recent Activity</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Latest system events and user interactions</p>
+                </div>
+                <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                    View All Logs
+                </button>
+            </div>
+            
+            <div class="space-y-4" id="activity-feed">
+                <!-- Activity items will be loaded here -->
+                <div class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900 dark:text-white font-medium">System started successfully</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">2 minutes ago</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                    <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900 dark:text-white font-medium">New server connection established</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">5 minutes ago</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                    <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900 dark:text-white font-medium">High CPU usage detected</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">10 minutes ago</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Enhanced JavaScript -->
     <script>
-        // Dark mode functionality
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
-            if (savedTheme) {
-                document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-            } else {
-                document.documentElement.classList.toggle('dark', prefersDark);
-            }
-            
-            updateThemeIcons();
-        }
-
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateThemeIcons();
-            updateChartColors(); // Update chart colors when theme changes
-        }
-
-        function updateThemeIcons() {
-            const isDark = document.documentElement.classList.contains('dark');
-            const sunIcon = document.getElementById('sun-icon');
-            const moonIcon = document.getElementById('moon-icon');
-            
-            if (sunIcon && moonIcon) {
-                sunIcon.classList.toggle('hidden', isDark);
-                moonIcon.classList.toggle('hidden', !isDark);
-            }
-        }
-
-        // Avatar dropdown functionality
-        function initDropdown() {
-            const toggle = document.getElementById('user-dropdown-toggle');
-            const menu = document.getElementById('user-dropdown-menu');
-            
-            if (toggle && menu) {
-                toggle.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    menu.classList.toggle('show');
-                });
-                
-                document.addEventListener('click', () => {
-                    menu.classList.remove('show');
-                });
-                
-                menu.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                });
-            }
-        }
-
-        // Function to load and display metrics
-      async function loadMetrics() {
-        try {
-          // Load general stats
-          const statsResponse = await fetch('/api/stats');
-          const stats = await statsResponse.json();
-          
-          // Update uptime
-          if (stats.uptime) {
-            document.getElementById('uptime-display').textContent = 
-              `${stats.uptime.days}d ${stats.uptime.hours}h ${stats.uptime.minutes}m`;
-          }
-          
-          // Update server count
-          if (stats.guilds) {
-            document.getElementById('server-count').textContent = stats.guilds.count;
-          }
-          
-          // Update total commands
-          if (stats.commands) {
-            const totalCommands = stats.commands.total_executed.toLocaleString();
-            document.getElementById('total-commands').textContent = totalCommands;
-          }
-          
-          // Load command metrics for chart
-          const metricsResponse = await fetch('/api/metrics/commands');
-          const metrics = await metricsResponse.json();
-          
-          // Update weekly total and percentage
-          document.getElementById('weekly-total').textContent = metrics.total_last_7_days.toLocaleString();
-          const changeColor = metrics.percentage_change >= 0 ? '#078838' : '#dc2626';
-          const changePrefix = metrics.percentage_change >= 0 ? '+' : '';
-          document.getElementById('percentage-change').innerHTML = 
-            `<span style="color: ${changeColor}">${changePrefix}${metrics.percentage_change}%</span>`;
-          
-          // Update chart with real data
-          updateChart(metrics.daily_data);
-          
-          // Log metrics for debugging
-          console.log('Stats loaded:', stats);
-          console.log('Metrics loaded:', metrics);
-          
-        } catch (error) {
-          console.error('Error loading metrics:', error);
-          // Fallback to default values
-          document.getElementById('weekly-total').textContent = '1,200';
-          document.getElementById('percentage-change').innerHTML = '<span style="color: #078838">+15%</span>';
-        }
-      }
-      
-      // Function to update the chart with real data
-      function updateChart(dailyData) {
-        if (!dailyData || dailyData.length === 0) {
-          console.log('No daily data available');
-          return;
-        }
+        // Global variables
+        let updateInterval;
+        let chartData = [];
         
-        // Calculate max value for Y-axis scaling
-        const maxValue = Math.max(...dailyData.map(d => d.count || 0));
-        const yAxisMax = Math.ceil(maxValue * 1.2 / 50) * 50; // Round up to nearest 50
-        
-        // Update Y-axis labels
-        document.getElementById('y-max').textContent = yAxisMax;
-        document.getElementById('y-75').textContent = Math.round(yAxisMax * 0.75);
-        document.getElementById('y-50').textContent = Math.round(yAxisMax * 0.5);
-        document.getElementById('y-25').textContent = Math.round(yAxisMax * 0.25);
-        document.getElementById('y-min').textContent = '0';
-        
-        // Generate path data for the chart
-        const chartWidth = 400;
-        const chartHeight = 148;
-        const stepWidth = chartWidth / (dailyData.length - 1);
-        
-        let pathData = '';
-        let areaData = '';
-        const chartPoints = [];
-        
-        dailyData.forEach((day, index) => {
-          const x = index * stepWidth;
-          const y = chartHeight - (day.count / yAxisMax * chartHeight);
-          
-          // Store point data for hover functionality
-          chartPoints.push({
-            x: x,
-            y: y,
-            count: day.count || 0,
-            date: day.date || '',
-            index: index
-          });
-          
-          if (index === 0) {
-            pathData += `M${x} ${y}`;
-            areaData += `M${x} ${y}`;
-          } else {
-            pathData += ` L${x} ${y}`;
-            areaData += ` L${x} ${y}`;
-          }
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdminDashboard();
+            startRealTimeUpdates();
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
         });
         
-        // Complete the area path
-        areaData += ` L${chartWidth} ${chartHeight} L0 ${chartHeight} Z`;
-        
-        // Update the chart elements
-        document.getElementById('chart-line').setAttribute('d', pathData);
-        document.getElementById('chart-area').setAttribute('d', areaData);
-        
-        // Add hover points to the chart
-        const chartSvg = document.querySelector('.chart-svg');
-        if (chartSvg) {
-          // Remove existing hover areas and points
-          chartSvg.querySelectorAll('.hover-area, .data-point').forEach(element => element.remove());
-          
-          // Add invisible hover areas with better positioning
-          chartPoints.forEach((point, index) => {
-            // Create visible data points with proportional radius
-            const dataPoint = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            dataPoint.setAttribute('cx', point.x);
-            dataPoint.setAttribute('cy', point.y);
-            // Calculate radius based on the actual chart dimensions to maintain proportional circles
-            const svgElement = chartSvg;
-            const rect = svgElement.getBoundingClientRect();
-            const scaleX = rect.width / 400; // viewBox width
-            const scaleY = rect.height / 148; // viewBox height
-            const avgScale = (scaleX + scaleY) / 2;
-            const radius = 3 / avgScale; // Adjust radius based on average scale
-            dataPoint.setAttribute('r', radius);
-            dataPoint.setAttribute('fill', '#0c7ff2');
-            dataPoint.setAttribute('stroke', 'white');
-            dataPoint.setAttribute('stroke-width', 1.5 / avgScale);
-            dataPoint.setAttribute('class', 'data-point');
-            dataPoint.style.opacity = '0';
-            dataPoint.style.transition = 'opacity 0.2s ease';
-            chartSvg.appendChild(dataPoint);
-            
-            // Create wider hover areas for better interaction
-            const hoverArea = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            const hoverWidth = chartWidth / dailyData.length; // Dynamic width based on data points
-            const hoverX = Math.max(0, point.x - hoverWidth / 2);
-            
-            hoverArea.setAttribute('x', hoverX);
-            hoverArea.setAttribute('y', 0);
-            hoverArea.setAttribute('width', hoverWidth);
-            hoverArea.setAttribute('height', chartHeight);
-            hoverArea.setAttribute('fill', 'transparent');
-            hoverArea.setAttribute('class', 'hover-area');
-            hoverArea.style.cursor = 'crosshair';
-            
-            // Store point data for event handlers
-            hoverArea.dataset.pointData = JSON.stringify(point);
-            hoverArea.dataset.pointIndex = index;
-            
-            // Add hover events with improved functionality
-            hoverArea.addEventListener('mouseenter', function(e) {
-              console.log('Chart hover enter:', point);
-              dataPoint.style.opacity = '1';
-              showTooltip(point, e);
-            });
-            
-            hoverArea.addEventListener('mouseleave', function(e) {
-              console.log('Chart hover leave');
-              dataPoint.style.opacity = '0';
-              hideTooltip();
-            });
-            
-            hoverArea.addEventListener('mousemove', function(e) {
-              updateTooltipPosition(point, e);
-            });
-            
-            chartSvg.appendChild(hoverArea);
-          });
+        // Initialize admin dashboard
+        function initializeAdminDashboard() {
+            console.log('Initializing admin dashboard...');
+            loadMetrics();
+            updateChartColors();
+            initializeTooltips();
         }
         
-        // Update day labels
-        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        dailyData.forEach((day, index) => {
-          if (day.date) {
-            const date = new Date(day.date);
-            const dayName = dayNames[date.getDay()];
-            const dayElement = document.getElementById(`day-${index}`);
-            if (dayElement) {
-              dayElement.textContent = dayName;
+        // Update current time display
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = timeString;
             }
-          }
-        });
+        }
+        
+        // Load and update all metrics
+        async function loadMetrics() {
+            try {
+                console.log('Loading metrics...');
+                
+                // Load general stats
+                const statsResponse = await fetch('/api/stats');
+                const stats = await statsResponse.json();
+                
+                // Update uptime
+                if (stats.uptime) {
+                    const uptimeElement = document.getElementById('uptime-display');
+                    if (uptimeElement) {
+                        uptimeElement.textContent = `${stats.uptime.days}d ${stats.uptime.hours}h ${stats.uptime.minutes}m`;
+                    }
+                }
+                
+                // Update server count with animation
+                if (stats.guilds) {
+                    updateStatWithAnimation('server-count', stats.guilds.count);
+                }
+                
+                // Update user count
+                if (stats.performance && stats.performance.user_count) {
+                    updateStatWithAnimation('user-count', stats.performance.user_count);
+                }
+                
+                // Update latency with status
+                if (stats.performance && stats.performance.latency !== undefined) {
+                    updateLatency(stats.performance.latency);
+                }
+                
+                // Update CPU with status
+                if (stats.performance && stats.performance.cpu_usage !== undefined) {
+                    updateCPU(stats.performance.cpu_usage);
+                }
+                
+                // Load command metrics
+                await loadCommandMetrics();
+                
+                // Update system health metrics
+                updateSystemHealth();
+                
+                console.log('Metrics loaded successfully');
+                
+            } catch (error) {
+                console.error('Error loading metrics:', error);
+                showNotification('Failed to load metrics', 'error');
+            }
+        }
+        
+        // Load command execution metrics
+        async function loadCommandMetrics() {
+            try {
+                const metricsResponse = await fetch('/api/metrics/commands');
+                const metrics = await metricsResponse.json();
+                
+                // Update weekly total
+                const weeklyTotalElement = document.getElementById('weekly-total');
+                if (weeklyTotalElement && metrics.total_last_7_days !== undefined) {
+                    weeklyTotalElement.textContent = metrics.total_last_7_days.toLocaleString();
+                }
+                
+                // Update percentage change
+                const percentageElement = document.getElementById('percentage-change');
+                if (percentageElement && metrics.percentage_change !== undefined) {
+                    const changeColor = metrics.percentage_change >= 0 ? '#10b981' : '#ef4444';
+                    const changePrefix = metrics.percentage_change >= 0 ? '+' : '';
+                    percentageElement.innerHTML = `<span style="color: ${changeColor}">${changePrefix}${metrics.percentage_change}%</span>`;
+                }
+                
+                // Update total commands
+                if (metrics.total_executed !== undefined) {
+                    updateStatWithAnimation('total-commands', metrics.total_executed);
+                }
+                
+                // Update chart
+                if (metrics.daily_data) {
+                    updateChart(metrics.daily_data);
+                    chartData = metrics.daily_data;
+                }
+                
+            } catch (error) {
+                console.error('Error loading command metrics:', error);
+            }
+        }
+        
+        // Update statistic with animation
+        function updateStatWithAnimation(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const currentValue = parseInt(element.textContent.replace(/,/g, '')) || 0;
+            
+            if (newValue !== currentValue) {
+                element.classList.add('counting');
+                animateNumber(element, currentValue, newValue, 1000, true);
+                
+                setTimeout(() => {
+                    element.classList.remove('counting');
+                }, 1000);
+            }
+        }
+        
+        // Animate number changes
+        function animateNumber(element, start, end, duration, addCommas = false) {
+            const startTime = performance.now();
+            
+            function updateNumber(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(start + (end - start) * easeOut);
+                
+                element.textContent = addCommas ? current.toLocaleString() : current.toString();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateNumber);
+                }
+            }
+            
+            requestAnimationFrame(updateNumber);
+        }
+        
+        // Update latency with status indicator
+        function updateLatency(latency) {
+            const latencyElement = document.getElementById('latency-display');
+            const statusElement = document.getElementById('latency-status');
+            
+            if (latencyElement) {
+                latencyElement.textContent = `${latency.toFixed(1)}ms`;
+            }
+            
+            if (statusElement) {
+                let status, color;
+                if (latency < 100) {
+                    status = 'EXCELLENT';
+                    color = 'green';
+                } else if (latency < 200) {
+                    status = 'GOOD';
+                    color = 'yellow';
+                } else if (latency < 500) {
+                    status = 'WARNING';
+                    color = 'orange';
+                } else {
+                    status = 'CRITICAL';
+                    color = 'red';
+                }
+                
+                statusElement.textContent = status;
+                statusElement.className = `text-xs font-medium text-${color}-600 dark:text-${color}-400 bg-${color}-100 dark:bg-${color}-900/30 px-2 py-1 rounded-full`;
+            }
+        }
+        
+        // Update CPU with status indicator
+        function updateCPU(cpuUsage) {
+            const cpuElement = document.getElementById('cpu-display');
+            const statusElement = document.getElementById('cpu-status');
+            
+            if (cpuElement) {
+                cpuElement.textContent = `${cpuUsage.toFixed(1)}%`;
+            }
+            
+            if (statusElement) {
+                let status, color;
+                if (cpuUsage < 30) {
+                    status = 'LOW';
+                    color = 'green';
+                } else if (cpuUsage < 60) {
+                    status = 'NORMAL';
+                    color = 'yellow';
+                } else if (cpuUsage < 80) {
+                    status = 'HIGH';
+                    color = 'orange';
+                } else {
+                    status = 'CRITICAL';
+                    color = 'red';
+                }
+                
+                statusElement.textContent = status;
+                statusElement.className = `text-xs font-medium text-${color}-600 dark:text-${color}-400 bg-${color}-100 dark:bg-${color}-900/30 px-2 py-1 rounded-full`;
+            }
+        }
+        
+        // Update system health metrics
+        function updateSystemHealth() {
+            // Simulate real-time data
+            const memoryUsage = Math.random() * 30 + 50; // 50-80%
+            const networkSpeed = Math.random() * 2 + 0.5; // 0.5-2.5 MB/s
+            const dbConnections = Math.floor(Math.random() * 20 + 5); // 5-25
+            const errorRate = Math.random() * 0.1; // 0-0.1%
+            
+            // Update memory
+            document.getElementById('memory-percentage').textContent = `${memoryUsage.toFixed(1)}%`;
+            document.getElementById('memory-bar').style.width = `${memoryUsage}%`;
+            
+            // Update network
+            document.getElementById('network-speed').textContent = `${networkSpeed.toFixed(1)} MB/s`;
+            document.getElementById('network-bar').style.width = `${(networkSpeed / 3) * 100}%`;
+            
+            // Update database
+            document.getElementById('db-connections').textContent = `${dbConnections}/100`;
+            document.getElementById('db-bar').style.width = `${dbConnections}%`;
+            
+            // Update error rate
+            document.getElementById('error-rate').textContent = `${errorRate.toFixed(3)}%`;
+            document.getElementById('error-bar').style.width = `${Math.max(errorRate * 50, 2)}%`;
+        }
+        
+        // Update chart with new data
+        function updateChart(dailyData) {
+            if (!dailyData || dailyData.length === 0) return;
+            
+            const maxValue = Math.max(...dailyData.map(d => d.count || 0));
+            const yAxisMax = Math.ceil(maxValue * 1.2 / 50) * 50;
+            
+            // Update Y-axis labels
+            document.getElementById('y-max').textContent = yAxisMax;
+            document.getElementById('y-75').textContent = Math.round(yAxisMax * 0.75);
+            document.getElementById('y-50').textContent = Math.round(yAxisMax * 0.5);
+            document.getElementById('y-25').textContent = Math.round(yAxisMax * 0.25);
+            
+            const chartWidth = 400;
+            const chartHeight = 200;
+            const stepWidth = chartWidth / (dailyData.length - 1);
+            
+            let pathData = '';
+            let areaData = '';
+            
+            dailyData.forEach((day, index) => {
+                const x = index * stepWidth;
+                const y = chartHeight - (day.count / yAxisMax * chartHeight);
+                
+                if (index === 0) {
+                    pathData += `M${x} ${y}`;
+                    areaData += `M${x} ${y}`;
+                } else {
+                    pathData += ` L${x} ${y}`;
+                    areaData += ` L${x} ${y}`;
+                }
+            });
+            
+            areaData += ` L${chartWidth} ${chartHeight} L0 ${chartHeight} Z`;
+            
+            document.getElementById('chart-line').setAttribute('d', pathData);
+            document.getElementById('chart-area').setAttribute('d', areaData);
+            
+            // Update day labels
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dailyData.forEach((day, index) => {
+                if (day.date) {
+                    const date = new Date(day.date);
+                    const dayName = dayNames[date.getDay()];
+                    const dayElement = document.getElementById(`day-${index}`);
+                    if (dayElement) {
+                        dayElement.textContent = dayName;
+                    }
+                }
+            });
+        }
         
         // Update chart colors based on theme
-        updateChartColors();
-      }
-      
-      // Tooltip functionality
-      function showTooltip(point, event) {
-        let tooltip = document.getElementById('chart-tooltip');
-        if (!tooltip) {
-          tooltip = document.createElement('div');
-          tooltip.id = 'chart-tooltip';
-          tooltip.style.cssText = `
-            position: fixed;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            pointer-events: none;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-          `;
-          document.body.appendChild(tooltip);
-        }
-        
-        const formatDate = (dateStr) => {
-          if (!dateStr) return 'Today';
-          const date = new Date(dateStr);
-          return date.toLocaleDateString('en-US', { 
-            month: 'short', 
-            day: 'numeric',
-            weekday: 'short'
-          });
-        };
-        
-        tooltip.innerHTML = `
-          <div style="font-weight: 600; margin-bottom: 6px; color: #60a5fa;">${formatDate(point.date)}</div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 8px; height: 8px; background: #0c7ff2; border-radius: 50%;"></div>
-            <span>Commands: <strong>${point.count.toLocaleString()}</strong></span>
-          </div>
-        `;
-        
-        tooltip.style.opacity = '1';
-        
-        // Position tooltip using mouse coordinates
-        updateTooltipPosition(point, event);
-      }
-      
-      function updateTooltipPosition(point, event) {
-        const tooltip = document.getElementById('chart-tooltip');
-        if (!tooltip || !event) return;
-        
-        const tooltipRect = tooltip.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        
-        let left = event.clientX + 15;
-        let top = event.clientY - 15;
-        
-        // Adjust position to keep tooltip in viewport
-        if (left + tooltipRect.width > viewportWidth) {
-          left = event.clientX - tooltipRect.width - 15;
-        }
-        
-        if (top - tooltipRect.height < 0) {
-          top = event.clientY + 15;
-        }
-        
-        tooltip.style.left = left + 'px';
-        tooltip.style.top = top + 'px';
-      }
-      
-      function hideTooltip() {
-        const tooltip = document.getElementById('chart-tooltip');
-        if (tooltip) {
-          tooltip.style.opacity = '0';
-          // Remove tooltip after animation to prevent flickering
-          setTimeout(() => {
-            if (tooltip.style.opacity === '0') {
-              tooltip.style.left = '-9999px';
-            }
-          }, 300);
-        }
-      }
-      
-      // Function to update metrics and chart (called by real-time updates)
-      async function updateMetricsAndChart() {
-        try {
-          // Load command metrics for chart
-          const metricsResponse = await fetch('/api/metrics/commands');
-          const metrics = await metricsResponse.json();
-          
-          // Update weekly total and percentage
-          document.getElementById('weekly-total').textContent = metrics.total_last_7_days.toLocaleString();
-          const changeColor = metrics.percentage_change >= 0 ? '#078838' : '#dc2626';
-          const changePrefix = metrics.percentage_change >= 0 ? '+' : '';
-          document.getElementById('percentage-change').innerHTML = 
-            `<span style="color: ${changeColor}">${changePrefix}${metrics.percentage_change}%</span>`;
-          
-          // Update chart with real data
-          updateChart(metrics.daily_data);
-          
-          console.log('Chart metrics updated:', metrics);
-          
-        } catch (error) {
-          console.error('Error updating chart metrics:', error);
-        }
-      }
-      
-      // Function to update chart colors based on current theme
-      function updateChartColors() {
-        const isDark = document.documentElement.classList.contains('dark');
-        const chartLine = document.getElementById('chart-line');
-        const gradientStops = document.querySelectorAll('#paint0_linear stop');
-        
-        if (isDark) {
-          // Dark mode colors - brighter blue
-          chartLine.setAttribute('stroke', '#60a5fa');
-          gradientStops[0].setAttribute('stop-color', '#60a5fa');
-          gradientStops[1].setAttribute('stop-color', '#60a5fa');
-        } else {
-          // Light mode colors - original blue
-          chartLine.setAttribute('stroke', '#0c7ff2');
-          gradientStops[0].setAttribute('stop-color', '#0c7ff2');
-          gradientStops[1].setAttribute('stop-color', '#0c7ff2');
-        }
-      }
-      
-      // Function to update metrics and chart - called by main.js for real-time updates
-      async function updateMetricsAndChart() {
-        try {
-          console.log('Updating metrics and chart...');
-          
-          // Load command metrics for chart
-          const metricsResponse = await fetch('/api/metrics/commands');
-          const metrics = await metricsResponse.json();
-          
-          // Update weekly total with animation
-          const weeklyTotalElement = document.getElementById('weekly-total');
-          if (weeklyTotalElement) {
-            const currentTotal = parseInt(weeklyTotalElement.textContent.replace(/,/g, '')) || 0;
-            const newTotal = metrics.total_last_7_days;
+        function updateChartColors() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const chartLine = document.getElementById('chart-line');
+            const gradientStops = document.querySelectorAll('#paint0_linear stop');
             
-            if (newTotal !== currentTotal) {
-              // Animate the number change
-              if (typeof animateNumber === 'function') {
-                animateNumber(weeklyTotalElement, currentTotal, newTotal, 1000, true); // true for comma formatting
-              } else {
-                weeklyTotalElement.textContent = newTotal.toLocaleString();
-              }
-              
-              // Add flash effect
-              weeklyTotalElement.classList.add('flash-update');
-              setTimeout(() => {
-                weeklyTotalElement.classList.remove('flash-update');
-              }, 1000);
+            if (chartLine) {
+                const color = isDark ? '#60a5fa' : '#0c7ff2';
+                chartLine.setAttribute('stroke', color);
+                
+                gradientStops.forEach(stop => {
+                    stop.setAttribute('stop-color', color);
+                });
             }
-          }
-          
-          // Update percentage with animation
-          const percentageElement = document.getElementById('percentage-change');
-          if (percentageElement && metrics.percentage_change !== undefined) {
-            const changeColor = metrics.percentage_change >= 0 ? '#078838' : '#dc2626';
-            const changePrefix = metrics.percentage_change >= 0 ? '+' : '';
+        }
+        
+        // Initialize tooltips
+        function initializeTooltips() {
+            // Add tooltip functionality to stat cards
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
+        
+        // Start real-time updates
+        function startRealTimeUpdates() {
+            // Update metrics every 10 seconds
+            updateInterval = setInterval(() => {
+                loadMetrics();
+            }, 10000);
             
-            // Add flash effect for percentage change
-            percentageElement.classList.add('flash-update');
+            // Update system health every 5 seconds
+            setInterval(() => {
+                updateSystemHealth();
+            }, 5000);
+        }
+        
+        // Refresh all metrics manually
+        function refreshAllMetrics() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = `
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Refreshing...
+            `;
+            button.disabled = true;
+            
+            // Load fresh data
+            loadMetrics().then(() => {
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    showNotification('Metrics refreshed successfully', 'success');
+                }, 1000);
+            }).catch(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                showNotification('Failed to refresh metrics', 'error');
+            });
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-medium transition-all duration-300 ${
+                type === 'success' ? 'bg-green-600' : 
+                type === 'error' ? 'bg-red-600' : 
+                'bg-blue-600'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
             setTimeout(() => {
-              percentageElement.classList.remove('flash-update');
-            }, 800);
+                notification.style.transform = 'translateX(-100%)';
+            }, 100);
             
-            percentageElement.innerHTML = 
-              `<span style="color: ${changeColor}">${changePrefix}${metrics.percentage_change}%</span>`;
-          }
-          
-          // Update chart with new data
-          updateChart(metrics.daily_data);
-          
-          // Load and update performance metrics
-          try {
-            const performanceResponse = await fetch('/api/metrics/performance');
-            const performanceData = await performanceResponse.json();
-            
-            // Update latency
-            const latencyElement = document.querySelector('[data-metric="latency"]');
-            if (latencyElement && performanceData.latency !== undefined) {
-              const newLatency = parseFloat(performanceData.latency);
-              const currentLatency = parseFloat(latencyElement.dataset.latency || '0');
-              
-              if (Math.abs(newLatency - currentLatency) > 0.1) {
-                latencyElement.textContent = `${newLatency.toFixed(1)}ms`;
-                latencyElement.dataset.latency = newLatency;
-                
-                // Add flash effect
-                latencyElement.classList.add('flash-update');
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
                 setTimeout(() => {
-                  latencyElement.classList.remove('flash-update');
-                }, 500);
-              }
-            }
-            
-            // Update CPU usage
-            const cpuElement = document.querySelector('[data-metric="cpu"]');
-            if (cpuElement && performanceData.cpu_usage !== undefined) {
-              const newCpu = parseFloat(performanceData.cpu_usage);
-              const currentCpu = parseFloat(cpuElement.dataset.cpu || '0');
-              
-              if (Math.abs(newCpu - currentCpu) > 0.1) {
-                cpuElement.textContent = `${newCpu.toFixed(1)}%`;
-                cpuElement.dataset.cpu = newCpu;
-                
-                // Add flash effect
-                cpuElement.classList.add('flash-update');
-                setTimeout(() => {
-                  cpuElement.classList.remove('flash-update');
-                }, 700);
-              }
-            }
-            
-            console.log('Performance metrics updated:', performanceData);
-          } catch (performanceError) {
-            console.warn('Failed to update performance metrics:', performanceError);
-          }
-          
-          console.log('Metrics updated:', metrics);
-          
-        } catch (error) {
-          console.warn('Failed to update metrics:', error);
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
         }
-      }
-      
-      // Initialize everything when page loads
-      document.addEventListener('DOMContentLoaded', function() {
-        initTheme();
-        initDropdown(); // Initialize dropdown functionality
-        loadMetrics();
-        updateChartColors(); // Initialize chart colors based on current theme
         
-        // Add theme toggle event listener
-        const themeToggle = document.getElementById('theme-toggle');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', toggleTheme);
-        }
-      });
-      
-      // Refresh metrics every 30 seconds
-      setInterval(loadMetrics, 30000);
+        // Cleanup when page unloads
+        window.addEventListener('beforeunload', function() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+        });
+        
+        // Console easter egg
+        console.log(`
+    🤖 BronxBot Admin Dashboard
+    ===========================
+    Welcome to the admin panel!
+    
+    Available commands:
+    - refreshAllMetrics() - Refresh all data
+    - updateChartColors() - Update chart theme
+    - loadMetrics() - Load fresh metrics
+    
+    System Status: Online
+    Last Updated: ${new Date().toISOString()}
+        `);
     </script>
     
-    <!-- Load navbar.js first to ensure dropdown functionality is available -->
-    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/theme-handler.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/ui-components.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  
-  </body>
+    <!-- Load external scripts -->
+    <script src="{{ url_for('static', filename='js/theme-handler.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/ui-components.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</body>
 </html>

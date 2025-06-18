@@ -1,107 +1,500 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" class="scroll-smooth">
 <head>
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-        rel="stylesheet"
-        as="style"
-        onload="this.rel='stylesheet'"
-        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
-    />
-    
-    <title>Error - BronxBot</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/southbronx.png') }}">
-    
-    <!-- Meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="title" content="Error - BronxBot">
-    <meta name="description" content="Oops! Something went wrong with BronxBot, your Discord server's best friend for moderation, fun, and community management.">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    
+    <!-- Title and favicon -->
+    <title>{% if error_code %}{{ error_code }} Error{% else %}Error{% endif %} - BronxBot</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/southbronx.png') }}">
+    
+    <!-- Enhanced Meta tags -->
+    <meta name="title" content="{% if error_code %}{{ error_code }} Error{% else %}Error{% endif %} - BronxBot">
+    <meta name="description" content="Oops! Something went wrong with BronxBot. Don't worry, we're here to help you get back on track.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#dc2626">
+    
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="Error - BronxBot">
-    <meta property="og:description" content="Oops! Something went wrong with BronxBot, your Discord server's best friend for moderation, fun, and community management.">
+    <meta property="og:description" content="Oops! Something went wrong with BronxBot. Don't worry, we're here to help you get back on track.">
     <meta property="og:image" content="{{ url_for('static', filename='images/southbronx.png', _external=True) }}">
-    <meta name="theme-color" content="#5865F2">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:title" content="Error - BronxBot">
+    <meta property="twitter:description" content="Oops! Something went wrong with BronxBot. Don't worry, we're here to help you get back on track.">
+    
+    <!-- Fonts with better loading -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600">
+    </noscript>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,aspect-ratio" defer></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        discord: '#5865F2',
+                        'discord-hover': '#4752C4',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-gentle': 'bounce 2s infinite',
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'scale-in': 'scaleIn 0.5s ease-out',
+                        'glitch': 'glitch 2s infinite',
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'error-pattern': 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ef4444" fill-opacity="0.05"%3E%3Cpath d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(1deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        @keyframes scaleIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.9); 
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1); 
+            }
+        }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            10% { transform: translate(-2px, -1px); }
+            20% { transform: translate(2px, 1px); }
+            30% { transform: translate(-1px, 2px); }
+            40% { transform: translate(1px, -2px); }
+            50% { transform: translate(-2px, 1px); }
+            60% { transform: translate(2px, -1px); }
+            70% { transform: translate(-1px, -2px); }
+            80% { transform: translate(1px, 2px); }
+            90% { transform: translate(-2px, -1px); }
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .error-glow {
+            box-shadow: 0 0 50px rgba(239, 68, 68, 0.3);
+        }
+        
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(239, 68, 68, 0.5);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(239, 68, 68, 0.7);
+        }
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        /* Enhanced button styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #0c7ff2 0%, #0a6ad1 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0a6ad1 0%, #0959b8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(12, 127, 242, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Particle effect */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(239, 68, 68, 0.6);
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+        }
+        
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 4s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 6s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 7s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 8s; }
+    </style>
 </head>
-<body>
-    <div class="relative flex size-full min-h-screen flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
-        <div class="layout-container flex h-full grow flex-col">
-            <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-white/10 px-10 py-3 backdrop-blur-sm">
-                <div class="flex items-center gap-4 text-white">
-                    <div class="size-4">
-                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"
-                                fill="currentColor"
-                            ></path>
-                        </svg>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <img src="{{ url_for('static', filename='images/southbronx.png') }}" alt="BronxBot Logo" class="w-8 h-8 rounded-full">
-                        <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">BronxBot</h2>
-                    </div>
-                </div>
-                <div class="flex flex-1 justify-end gap-8">
-                    <div class="flex gap-2">
-                        <a href="/"
-                           class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white/10 backdrop-blur-sm text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-white/20 transition-colors">
-                            <span class="truncate">Home</span>
-                        </a>
-                    </div>
-                </div>
-            </header>
 
-            <!-- Error Section -->
-            <div class="flex flex-1 items-center justify-center px-10 py-20">
-                <div class="max-w-2xl text-center">
-                    <!-- Error Icon -->
-                    <div class="mb-8">
-                        <div class="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48px" height="48px" fill="#ef4444" viewBox="0 0 256 256">
-                                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM116,136V120a12,12,0,0,1,24,0v16a12,12,0,0,1-24,0Zm28,40a16,16,0,1,1-16-16A16,16,0,0,1,144,176Z"></path>
-                            </svg>
-                        </div>
-                        <h1 class="text-4xl font-bold text-white mb-4">
-                            Oops! Something went wrong
-                        </h1>
-                        <div class="text-lg text-white/80 mb-8">
-                            {% if error %}
-                                <p class="text-red-400">{{ error }}</p>
-                            {% else %}
-                                <p>An unexpected error occurred. Please try again later.</p>
-                            {% endif %}
-                        </div>
-                    </div>
+<body class="font-sans overflow-x-hidden">
+    <!-- Background with animated particles -->
+    <div class="fixed inset-0 bg-gradient-to-br from-slate-900 via-red-900/20 via-purple-900/30 to-slate-900 bg-error-pattern">
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
 
-                    <!-- Action Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <a href="/"
-                           class="inline-flex items-center px-8 py-4 bg-[#0c7ff2] text-white font-bold rounded-full text-lg hover:bg-[#0a6ad1] transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
-                            Return Home
-                        </a>
-                        <a href="javascript:history.back()"
-                           class="inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-bold rounded-full text-lg hover:bg-white/20 transition-all border border-white/30">
-                            Go Back
-                        </a>
+    <div class="relative flex min-h-screen flex-col">
+        <!-- Enhanced Header -->
+        <header class="relative z-10 flex items-center justify-between px-6 md:px-10 py-4 glass animate-fade-in">
+            <div class="flex items-center gap-4 text-white">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <img src="{{ url_for('static', filename='images/southbronx.png') }}" 
+                             alt="BronxBot Logo" 
+                             class="w-10 h-10 rounded-full object-cover ring-2 ring-white/30 animate-pulse-slow"
+                             loading="eager">
+                        <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-bounce"></div>
                     </div>
-
-                    <!-- Support Link -->
-                    <div class="mt-8">
-                        <p class="text-white/60 text-sm mb-4">Need help? Contact our support team:</p>
-                        <a href="https://discord.gg/jENm4phpgv" target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-2 text-[#0c7ff2] hover:text-white transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                                <path d="M104,140a12,12,0,1,1-12-12A12,12,0,0,1,104,140Zm60-12a12,12,0,1,0,12,12A12,12,0,0,0,164,128Zm74.45,64.9-67,29.71a16.17,16.17,0,0,1-21.71-9.1l-8.11-22q-6.72.45-13.63.46t-13.63-.46l-8.11,22a16.18,16.18,0,0,1-21.71,9.1l-67-29.71a15.93,15.93,0,0,1-9.06-18.51L38,58A16.07,16.07,0,0,1,48,42.73c21.81-10.64,50.17-17.76,80-17.73s58.2,7.09,80,17.73A16.07,16.07,0,0,1,218,58l29.53,117.38A15.93,15.93,0,0,1,238.45,192.9Z"></path>
-                            </svg>
-                            Join Discord Support
-                        </a>
+                    <div>
+                        <h1 class="text-white text-xl font-bold leading-tight tracking-tight">BronxBot</h1>
+                        <p class="text-white/60 text-xs">Error Handler</p>
                     </div>
                 </div>
             </div>
-        </div>
+            
+            <nav class="flex gap-3">
+                <a href="/" 
+                   class="btn-secondary px-4 py-2 rounded-lg text-white text-sm font-medium hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50"
+                   aria-label="Return to homepage">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" class="inline mr-2">
+                        <path d="M224,115.55V208a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.11l80,75.48A16,16,0,0,1,224,115.55Z"></path>
+                    </svg>
+                    Home
+                </a>
+            </nav>
+        </header>
+
+        <!-- Main Error Content -->
+        <main class="relative z-10 flex-1 flex items-center justify-center px-6 py-12">
+            <div class="max-w-4xl w-full text-center animate-slide-up">
+                <!-- Error Code Display -->
+                {% if error_code %}
+                <div class="mb-8 animate-scale-in">
+                    <div class="inline-block relative">
+                        <span class="text-8xl md:text-9xl font-black text-white/10 select-none animate-glitch">{{ error_code }}</span>
+                        <span class="absolute inset-0 text-8xl md:text-9xl font-black text-red-500 animate-pulse">{{ error_code }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Error Icon & Message -->
+                <div class="mb-12 animate-float">
+                    <div class="w-32 h-32 mx-auto mb-8 relative">
+                        <div class="absolute inset-0 bg-red-500/20 rounded-full error-glow animate-pulse-slow"></div>
+                        <div class="relative w-full h-full bg-gradient-to-br from-red-500/30 to-red-600/30 rounded-full flex items-center justify-center glass">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#ef4444" viewBox="0 0 256 256" class="animate-bounce-gentle">
+                                {% if error_code == 404 %}
+                                    <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Zm112,16a8,8,0,0,1-8,8H128a8,8,0,0,1,0-16h16A8,8,0,0,1,152,128Z"></path>
+                                {% elif error_code == 403 %}
+                                    <path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96ZM208,208H48V96H208V208Zm-68-56a12,12,0,1,1-12-12A12,12,0,0,1,140,152Z"></path>
+                                {% elif error_code == 500 %}
+                                    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z"></path>
+                                {% else %}
+                                    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM116,136V120a12,12,0,0,1,24,0v16a12,12,0,0,1-24,0Zm28,40a16,16,0,1,1-16-16A16,16,0,0,1,144,176Z"></path>
+                                {% endif %}
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <h1 class="text-4xl md:text-6xl font-black text-white mb-6 text-shadow">
+                        {% if error_code == 404 %}
+                            Page Not Found
+                        {% elif error_code == 403 %}
+                            Access Denied
+                        {% elif error_code == 500 %}
+                            Server Error
+                        {% else %}
+                            Oops! Something Went Wrong
+                        {% endif %}
+                    </h1>
+                    
+                    <div class="max-w-2xl mx-auto">
+                        <p class="text-xl md:text-2xl text-white/90 mb-4 leading-relaxed">
+                            {% if error_code == 404 %}
+                                The page you're looking for seems to have vanished into the digital void.
+                            {% elif error_code == 403 %}
+                                You don't have permission to access this resource.
+                            {% elif error_code == 500 %}
+                                Our servers are having a bit of trouble. We're working on it!
+                            {% else %}
+                                Don't worry, even the best bots encounter hiccups sometimes.
+                            {% endif %}
+                        </p>
+                        
+                        {% if error_message %}
+                        <div class="glass rounded-xl p-4 mb-6 border-l-4 border-red-500">
+                            <p class="text-red-200 font-mono text-sm break-words">{{ error_message }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        <p class="text-white/70 text-lg">
+                            Let's get you back on track! 🚀
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Enhanced Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                    <a href="/" 
+                       class="btn-primary inline-flex items-center px-8 py-4 text-white font-bold rounded-xl text-lg shadow-xl transform transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="mr-2">
+                            <path d="M224,115.55V208a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.11l80,75.48A16,16,0,0,1,224,115.55Z"></path>
+                        </svg>
+                        Return Home
+                    </a>
+                    
+                    <button onclick="window.history.back()" 
+                            class="btn-secondary inline-flex items-center px-8 py-4 text-white font-bold rounded-xl text-lg border border-white/30 transform transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="mr-2">
+                            <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path>
+                        </svg>
+                        Go Back
+                    </button>
+                    
+                    {% if error_code == 404 %}
+                    <button onclick="window.location.reload()" 
+                            class="btn-secondary inline-flex items-center px-6 py-3 text-white font-medium rounded-lg border border-white/20 transform transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256" class="mr-2">
+                            <path d="M197.67,186.37a8,8,0,0,1,0,11.29C196.58,198.73,170.82,224,128,224c-37.39,0-64.53-22.4-80-39.85V208a8,8,0,0,1-16,0V160a8,8,0,0,1,8-8H88a8,8,0,0,1,0,16H55.44C67.76,183.35,93,208,128,208c36.52,0,58.14-21.46,58.36-21.68A8,8,0,0,1,197.67,186.37ZM216,40a8,8,0,0,0-8,8V71.85C192.53,54.4,165.39,32,128,32,85.18,32,59.42,57.27,58.33,58.34a8,8,0,0,0,11.34,11.32C69.86,69.46,91.48,48,128,48c35,0,60.24,24.65,72.56,40H168a8,8,0,0,0,0,16h48a8,8,0,0,0,8-8V48A8,8,0,0,0,216,40Z"></path>
+                        </svg>
+                        Refresh Page
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Help & Support Section -->
+                <div class="glass rounded-2xl p-8 max-w-2xl mx-auto">
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center justify-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256">
+                            <path d="M142,176a6,6,0,0,1-6,6,22,22,0,0,1-22-22V144a6,6,0,0,1,0-12,10,10,0,0,0,0-20,6,6,0,0,1,0-12,22,22,0,0,1,0,44v20A10,10,0,0,0,136,182,6,6,0,0,1,142,176ZM128,26A102,102,0,1,0,230,128,102.12,102.12,0,0,0,128,26Zm0,192a90,90,0,1,1,90-90A90.1,90.1,0,0,1,128,218Zm0-168a10,10,0,1,1-10,10A10,10,0,0,1,128,50Z"></path>
+                        </svg>
+                        Need Help?
+                    </h2>
+                    
+                    <p class="text-white/80 text-lg mb-6 leading-relaxed">
+                        Don't let this error stop you! Our community is here to help.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <a href="https://discord.gg/jENm4phpgv" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="flex items-center gap-3 p-4 rounded-xl bg-discord/20 hover:bg-discord/30 text-white transition-all duration-300 transform hover:scale-105 border border-discord/30">
+                            <div class="w-12 h-12 bg-discord rounded-lg flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 256 256">
+                                    <path d="M104,140a12,12,0,1,1-12-12A12,12,0,0,1,104,140Zm60-12a12,12,0,1,0,12,12A12,12,0,0,0,164,128Zm74.45,64.9-67,29.71a16.17,16.17,0,0,1-21.71-9.1l-8.11-22q-6.72.45-13.63.46t-13.63-.46l-8.11,22a16.18,16.18,0,0,1-21.71,9.1l-67-29.71a15.93,15.93,0,0,1-9.06-18.51L38,58A16.07,16.07,0,0,1,48,42.73c21.81-10.64,50.17-17.76,80-17.73s58.2,7.09,80,17.73A16.07,16.07,0,0,1,218,58l29.53,117.38A15.93,15.93,0,0,1,238.45,192.9Z"></path>
+                                </svg>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-semibold text-lg">Discord Support</h3>
+                                <p class="text-sm text-white/70">Join our community</p>
+                            </div>
+                        </a>
+                        
+                        <a href="https://github.com/BronxBot/Dashboard/issues" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="flex items-center gap-3 p-4 rounded-xl bg-gray-800/30 hover:bg-gray-800/50 text-white transition-all duration-300 transform hover:scale-105 border border-gray-700/50">
+                            <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 256 256">
+                                    <path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68Z"></path>
+                                </svg>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-semibold text-lg">Report Issue</h3>
+                                <p class="text-sm text-white/70">GitHub Issues</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    {% if error_code %}
+                    <div class="mt-6 p-4 bg-black/20 rounded-lg border border-white/10">
+                        <p class="text-white/60 text-sm">
+                            <span class="font-mono text-red-400">Error Code:</span> {{ error_code }} • 
+                            <span class="font-mono text-blue-400">Timestamp:</span> {{ moment().format('YYYY-MM-DD HH:mm:ss UTC') if moment else 'N/A' }} • 
+                            <span class="font-mono text-green-400">Session:</span> {{ request.cookies.get('session_id', 'N/A')[:8] }}...
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+
+        <!-- Enhanced Footer -->
+        <footer class="relative z-10 glass px-6 py-4 text-center">
+            <p class="text-white/60 text-sm">
+                © 2025 BronxBot • Made with ❤️ for Discord Communities
+            </p>
+        </footer>
     </div>
+
+    <!-- Enhanced JavaScript -->
+    <script>
+        // Auto-refresh functionality for 5xx errors
+        {% if error_code and error_code >= 500 %}
+        let refreshCount = 0;
+        const maxRefreshes = 3;
+        const refreshInterval = 30000; // 30 seconds
+        
+        function autoRefresh() {
+            if (refreshCount < maxRefreshes) {
+                refreshCount++;
+                console.log(`Auto-refresh attempt ${refreshCount}/${maxRefreshes}`);
+                setTimeout(() => {
+                    window.location.reload();
+                }, refreshInterval);
+            }
+        }
+        
+        // Start auto-refresh for server errors
+        if (document.readyState === 'complete') {
+            autoRefresh();
+        } else {
+            window.addEventListener('load', autoRefresh);
+        }
+        {% endif %}
+        
+        // Enhanced error reporting
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript error on error page:', e.error);
+        });
+        
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            if ('performance' in window) {
+                const loadTime = Math.round(performance.now());
+                console.log(`Error page loaded in ${loadTime}ms`);
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case 'Escape':
+                    window.history.back();
+                    break;
+                case 'Home':
+                    window.location.href = '/';
+                    break;
+                case 'F5':
+                case 'r':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        window.location.reload();
+                    }
+                    break;
+            }
+        });
+
+        // Add some interactive elements
+        document.querySelectorAll('a, button').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.02)';
+            });
+            
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Console easter egg
+        console.log(`
+    🤖 BronxBot Error Handler
+    ========================
+    Error Code: {{ error_code or 'Unknown' }}
+    Timestamp: ${new Date().toISOString()}
+    User Agent: ${navigator.userAgent}
+    
+    Having trouble? Join our Discord: https://discord.gg/jENm4phpgv
+        `);
+    </script>
 </body>
 </html>

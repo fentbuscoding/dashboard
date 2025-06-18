@@ -1,315 +1,532 @@
 <!DOCTYPE html>
-<html class="transition-colors duration-300">
+<html lang="en" class="transition-colors duration-300">
 <head>
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-        rel="stylesheet"
-        as="style"
-        onload="this.rel='stylesheet'"
-        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
-    />
-    
-    <title>Dashboard - BronxBot</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/southbronx.png') }}">
-    
-    <!-- Meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Preconnect to external domains for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.discordapp.com">
+    
+    <!-- Title and favicon -->
+    <title>{% block title %}Dashboard - BronxBot{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/southbronx.png') }}">
+    
+    <!-- SEO Meta tags -->
     <meta name="title" content="BronxBot - Discord Bot Dashboard">
     <meta name="description" content="BronxBot is a versatile Discord bot featuring moderation, fun commands, giveaways, and server management tools. Manage your Discord server with ease!">
+    <meta name="keywords" content="discord bot, moderation, server management, bronxbot">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="author" content="BronxBot Team">
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="BronxBot - Discord Bot Dashboard">
     <meta property="og:description" content="BronxBot is a versatile Discord bot featuring moderation, fun commands, giveaways, and server management tools. Manage your Discord server with ease!">
     <meta property="og:image" content="{{ url_for('static', filename='images/southbronx.png', _external=True) }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="BronxBot - Discord Bot Dashboard">
+    <meta property="twitter:description" content="BronxBot is a versatile Discord bot featuring moderation, fun commands, giveaways, and server management tools. Manage your Discord server with ease!">
+    <meta property="twitter:image" content="{{ url_for('static', filename='images/southbronx.png', _external=True) }}">
+    
+    <!-- Theme color for mobile browsers -->
     <meta name="theme-color" content="#5865F2">
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta name="msapplication-navbutton-color" content="#5865F2">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Fonts with better loading strategy -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;600;700;900&family=Noto+Sans:wght@400;500;700;900" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;600;700;900&family=Noto+Sans:wght@400;500;700;900">
+    </noscript>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" defer></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'Noto Sans', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        discord: '#5865F2',
+                        'discord-hover': '#4752C4',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-gentle': 'bounce 2s infinite',
+                        'spin-slow': 'spin 3s linear infinite',
+                    }
+                }
+            }
         }
     </script>
-    <!-- Prevent flash of unstyled content by setting theme immediately -->
+    
+    <!-- Prevent flash of unstyled content -->
     <script src="{{ url_for('static', filename='js/fouc-prevention.js') }}"></script>
+    
+    <!-- Inline critical CSS for navbar -->
     {% include 'navbar_styles.html' %}
+    
     <style>
+        /* Enhanced animations and transitions */
         @keyframes spin360 {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
         .spin-360:hover {
             animation: spin360 0.6s ease-in-out;
         }
+        
+        .slide-in-up {
+            animation: slideInUp 0.5s ease-out;
+        }
+        
+        .fade-in-scale {
+            animation: fadeInScale 0.3s ease-out;
+        }
+        
         .dropdown-menu {
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
+            transform: translateY(-10px) scale(0.95);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
         .dropdown-menu.show {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+        }
+        
+        /* Enhanced hover effects */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark .stat-card:hover {
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .action-card:hover::before {
+            left: 100%;
+        }
+        
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        .dark .skeleton {
+            background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+            background-size: 200% 100%;
+        }
+        
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .px-40 {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        /* Focus improvements for accessibility */
+        .focus-ring:focus {
+            outline: 2px solid #0c7ff2;
+            outline-offset: 2px;
+        }
+        
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
-<body>
+
+<body class="font-sans">
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-discord text-white px-4 py-2 rounded-md z-50">
+        Skip to main content
+    </a>
+
     <div class="relative flex size-full min-h-screen flex-col bg-slate-50 dark:bg-gray-900 group/design-root overflow-x-hidden transition-colors duration-300" style='font-family: Inter, "Noto Sans", sans-serif;'>
         <div class="layout-container flex h-full grow flex-col">
-            <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] dark:border-b-gray-700 px-4 md:px-10 py-3 bg-white dark:bg-gray-800 transition-colors duration-300">
+            <!-- Enhanced Header -->
+            <header class="sticky top-0 z-40 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] dark:border-b-gray-700 px-4 md:px-10 py-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm transition-colors duration-300">
                 <div class="flex items-center gap-4 text-[#0d141c] dark:text-white">
-                    <!-- Dark/Light Mode Toggle -->
-                    <button id="theme-toggle" class="relative flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out transform hover:scale-105">
-                        <!-- Sun Icon (Light Mode) -->
-                        <svg id="sun-icon" class="w-5 h-5 text-yellow-500 transition-all duration-300" fill="currentColor" viewBox="0 0 20 20">
+                    <!-- Enhanced Theme Toggle -->
+                    <button id="theme-toggle" class="relative flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out transform hover:scale-105 focus-ring" aria-label="Toggle theme">
+                        <svg id="sun-icon" class="w-5 h-5 text-yellow-500 transition-all duration-300" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                             <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
                         </svg>
-                        <!-- Moon Icon (Dark Mode) -->
-                        <svg id="moon-icon" class="w-5 h-5 text-gray-300 transition-all duration-300 hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <svg id="moon-icon" class="w-5 h-5 text-gray-300 transition-all duration-300 hidden" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                             <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                         </svg>
                     </button>
+                    
                     <div class="flex items-center gap-3">
-                        <img src="{{ url_for('static', filename='images/southbronx.png') }}" alt="BronxBot Logo" class="w-8 h-8 rounded-full">
-                        <h2 class="text-[#0d141c] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">BronxBot</h2>
+                        <img src="{{ url_for('static', filename='images/southbronx.png') }}" alt="BronxBot Logo" class="w-8 h-8 rounded-full object-cover" loading="lazy">
+                        <h1 class="text-[#0d141c] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">BronxBot</h1>
                     </div>
                 </div>
 
                 <!-- Mobile hamburger button -->
-                <button id="mobile-menu-button" class="md:hidden flex items-center justify-center w-10 h-10 text-[#0d141c] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="mobile-menu-button" class="md:hidden flex items-center justify-center w-10 h-10 text-[#0d141c] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors focus-ring" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
 
-                <!-- Desktop navigation -->
-                <div class="hidden md:flex flex-1 justify-end gap-8">
-                    <div class="flex items-center gap-9">
-                        <a class="text-[#0c7ff2] dark:text-blue-400 text-sm font-medium leading-normal px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30" href="/">Dashboard</a>
-                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition-all duration-300" href="/servers">Servers</a>
-                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition-all duration-300" href="/faq">FAQ</a>
-                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition-all duration-300" href="https://discord.gg/jENm4phpgv">Support</a>
-                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition-all duration-300" href="https://github.com/BronxBot/Dashboard">GitHub</a>
+                <!-- Enhanced Desktop Navigation -->
+                <nav class="hidden md:flex flex-1 justify-end gap-8" role="navigation" aria-label="Main navigation">
+                    <div class="flex items-center gap-6">
+                        <a class="text-[#0c7ff2] dark:text-blue-400 text-sm font-medium leading-normal px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 focus-ring" href="/" aria-current="page">Dashboard</a>
+                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-2 rounded-lg transition-all duration-300 focus-ring" href="/servers">Servers</a>
+                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-2 rounded-lg transition-all duration-300 focus-ring" href="/faq">FAQ</a>
+                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-2 rounded-lg transition-all duration-300 focus-ring" href="https://discord.gg/jENm4phpgv" target="_blank" rel="noopener noreferrer">Support</a>
+                        <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-2 rounded-lg transition-all duration-300 focus-ring" href="https://github.com/BronxBot/Dashboard" target="_blank" rel="noopener noreferrer">GitHub</a>
                     </div>
                     
-                    <!-- User Avatar Dropdown -->
+                    <!-- Enhanced User Dropdown -->
                     <div class="relative">
-                        <button id="user-dropdown-toggle" class="flex items-center gap-2 hover:opacity-80 transition-opacity spin-360 focus:outline-none">
-                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-[#0c7ff2]" 
+                        <button id="user-dropdown-toggle" class="flex items-center gap-2 hover:opacity-80 transition-opacity spin-360 focus-ring rounded-full" aria-label="User menu" aria-expanded="false" aria-haspopup="true">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-[#0c7ff2] ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-800 ring-transparent hover:ring-[#0c7ff2]/20 transition-all duration-300" 
                                  style='background-image: url("https://cdn.discordapp.com/avatars/{{ request.cookies.get("user_id") }}/{{ request.cookies.get("avatar_hash", "") }}.png?size=64");'
-                                 title="{{ request.cookies.get('username', 'User') }}">
+                                 title="{{ request.cookies.get('username', 'User') }}"
+                                 loading="lazy">
                             </div>
                         </button>
                         
-                        <!-- Dropdown Menu -->
-                        <div id="user-dropdown-menu" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
-                            <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ request.cookies.get('username', 'User') }}</p>
+                        <!-- Enhanced Dropdown Menu -->
+                        <div id="user-dropdown-menu" class="dropdown-menu absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50" role="menu" aria-orientation="vertical">
+                            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ request.cookies.get('username', 'User') }}</p>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">#{{ request.cookies.get('user_id', '')[-4:] if request.cookies.get('user_id') else '' }}</p>
                             </div>
-                            <!-- Show Admin Dashboard only for bot owner -->
+                            
                             {% if is_bot_owner %}
-                            <a href="/" class="flex items-center gap-2 px-4 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                            <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm text-blue-600 dark:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus-ring rounded-lg mx-2" role="menuitem">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">
                                     <path d="M104,40H152a8,8,0,0,1,0,16H104a8,8,0,0,1,0-16ZM224,48V64a8,8,0,0,1-16,0V56H48v8a8,8,0,0,1-16,0V48A16,16,0,0,1,48,32H208A16,16,0,0,1,224,48ZM216,88v88a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V88A8,8,0,0,1,48,80H208A8,8,0,0,1,216,88Z"></path>
                                 </svg>
                                 Admin Dashboard
                             </a>
                             {% endif %}
-                            <a href="/servers" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            
+                            <a href="/servers" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus-ring rounded-lg mx-2" role="menuitem">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
                                 </svg>
                                 Manage Servers
                             </a>
-                            <a href="/logout" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            
+                            <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+                            
+                            <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors focus-ring rounded-lg mx-2" role="menuitem">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                 </svg>
                                 Logout
                             </a>
                         </div>
                     </div>
-                </div>
+                </nav>
             </header>
 
-            <!-- Mobile navigation menu -->
-            <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 border-b border-[#e7edf4] dark:border-gray-700 px-4 py-4 transition-colors duration-300">
-                <div class="flex flex-col gap-4">
-                    <a class="text-[#0c7ff2] dark:text-blue-400 text-sm font-medium leading-normal px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30" href="/">Dashboard</a>
-                    <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal px-3 py-2 rounded-lg hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300" href="/servers">Servers</a>
-                    <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal px-3 py-2 rounded-lg hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300" href="/faq">FAQ</a>
-                    <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal px-3 py-2 rounded-lg hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300" href="https://discord.gg/jENm4phpgv">Support</a>
-                    <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal px-3 py-2 rounded-lg hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300" href="https://github.com/BronxBot/Dashboard">GitHub</a>
-                </div>
+            <!-- Enhanced Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 border-b border-[#e7edf4] dark:border-gray-700 px-4 py-4 transition-colors duration-300 slide-in-up">
+                <nav class="flex flex-col gap-3" role="navigation" aria-label="Mobile navigation">
+                    <a class="text-[#0c7ff2] dark:text-blue-400 text-sm font-medium leading-normal px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-900/30 focus-ring" href="/" aria-current="page">Dashboard</a>
+                    <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal px-4 py-3 rounded-lg hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus-ring" href="/servers">Servers</a>
+                    <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal px-4 py-3 rounded-lg hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus-ring" href="/faq">FAQ</a>
+                    <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal px-4 py-3 rounded-lg hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus-ring" href="https://discord.gg/jENm4phpgv" target="_blank" rel="noopener noreferrer">Support</a>
+                    <a class="text-[#0d141c] dark:text-gray-300 text-sm font-medium leading-normal px-4 py-3 rounded-lg hover:text-[#0c7ff2] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus-ring" href="https://github.com/BronxBot/Dashboard" target="_blank" rel="noopener noreferrer">GitHub</a>
+                </nav>
             </div>
             
-            <div class="px-40 flex flex-1 justify-center py-5">
+            <!-- Main Content -->
+            <main id="main-content" class="px-4 md:px-8 lg:px-40 flex flex-1 justify-center py-5 slide-in-up">
                 <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-                    <div class="flex flex-wrap justify-between gap-3 p-4">
+                    <!-- Enhanced Welcome Section -->
+                    <div class="flex flex-wrap justify-between gap-6 p-4 mb-2">
                         <div class="flex min-w-72 flex-col gap-3">
-                            <p class="text-[#0d141c] dark:text-white tracking-light text-[32px] font-bold leading-tight">Welcome back, {{ username }}! 👋</p>
-                            <p class="text-[#49739c] dark:text-gray-300 text-sm font-normal leading-normal">Ready to manage your Discord servers?</p>
+                            <h1 class="text-[#0d141c] dark:text-white tracking-tight text-2xl md:text-3xl font-bold leading-tight">
+                                Welcome back, <span class="text-[#0c7ff2]">{{ username }}</span>! 👋
+                            </h1>
+                            <p class="text-[#49739c] dark:text-gray-300 text-base font-normal leading-relaxed">Ready to manage your Discord servers?</p>
                         </div>
                     </div>
 
-                    <!-- Quick Stats -->
-                    <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 p-4">
-                        <div class="flex flex-1 gap-3 rounded-lg border border-[#cedbe8] dark:border-gray-600 bg-slate-50 dark:bg-gray-800 p-4 flex-col transition-colors duration-300">
-                            <div class="text-[#0d141c] dark:text-white" data-icon="Server" data-size="24px" data-weight="regular">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                                    <path d="M32,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H40A8,8,0,0,1,32,64Zm8,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Zm176,48H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
-                                </svg>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <h2 id="server-count" class="text-[#0d141c] dark:text-white text-xl font-bold leading-tight" data-count="{{ stats.guilds.count if stats.guilds else (stats.server_count if stats.server_count else 0) }}">{{ stats.guilds.count if stats.guilds else (stats.server_count if stats.server_count else 'N/A') }}<span class="stats-indicator"></span></h2>
-                                <p class="text-[#49739c] dark:text-gray-300 text-sm font-normal leading-normal">Total Servers</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-1 gap-3 rounded-lg border border-[#cedbe8] dark:border-gray-600 bg-slate-50 dark:bg-gray-800 p-4 flex-col transition-colors duration-300">
-                            <div class="text-[#0d141c] dark:text-white" data-icon="Users" data-size="24px" data-weight="regular">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                                    <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.7,87.63a8,8,0,0,1-10.07,5.37,8,8,0,0,1-5.37-10.07,80.69,80.69,0,0,0,0-53.86,8,8,0,0,1,15.44-4.14A96.69,96.69,0,0,1,250.7,195.63Zm-52.32-120a8,8,0,0,1,0,11.31A44,44,0,0,1,176,92a8,8,0,0,1,0-16,60,60,0,0,0,22.38-4.62A8,8,0,0,1,198.38,75.63Z"></path>
-                                </svg>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <h2 id="user-count" class="text-[#0d141c] dark:text-white text-xl font-bold leading-tight" data-count="{{ stats.performance.user_count if stats.performance else (stats.user_count if stats.user_count else 0) }}">{{ stats.performance.user_count if stats.performance else (stats.user_count if stats.user_count else 'N/A') }}</h2>
-                                <p class="text-[#49739c] dark:text-gray-300 text-sm font-normal leading-normal">Total Users</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-1 gap-3 rounded-lg border border-[#cedbe8] dark:border-gray-600 bg-slate-50 dark:bg-gray-800 p-4 flex-col transition-colors duration-300">
-                            <div class="text-[#0d141c] dark:text-white" data-icon="Clock" data-size="24px" data-weight="regular">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                                    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z"></path>
-                                </svg>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <h2 class="text-[#0d141c] dark:text-white text-xl font-bold leading-tight" id="uptime" data-uptime="{{ (stats.uptime.total_seconds if stats.uptime else 0) }}">
-                                    {% if stats.uptime %}
-                                        {{ (stats.uptime.days if stats.uptime.days else 0) }}d {{ (stats.uptime.hours if stats.uptime.hours else 0) }}h {{ (stats.uptime.minutes if stats.uptime.minutes else 0) }}m
-                                    {% else %}
-                                        0d 0h 0m
-                                    {% endif %}
-                                </h2>
-                                <p class="text-[#49739c] dark:text-gray-300 text-sm font-normal leading-normal">Uptime</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-1 gap-3 rounded-lg border border-[#cedbe8] dark:border-gray-600 bg-slate-50 dark:bg-gray-800 p-4 flex-col transition-colors duration-300">
-                            <div class="text-[#0d141c] dark:text-white" data-icon="Lightning" data-size="24px" data-weight="regular">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                                    <path d="M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71l84.62-90.66L136.16,94.43a8,8,0,0,0,5,9.06l52.8,19.8Z"></path>
-                                </svg>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <h2 class="text-[#0d141c] dark:text-white text-xl font-bold leading-tight">{{ (stats.performance.latency if stats.performance else 'N/A') }}ms</h2>
-                                <p class="text-[#49739c] dark:text-gray-300 text-sm font-normal leading-normal">Latency</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="p-4">
-                        <h2 class="text-[#0d141c] dark:text-white text-xl font-bold leading-tight mb-4 transition-colors duration-300">Quick Actions</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <a href="/servers" class="block">
-                                <div class="border border-[#cedbe8] dark:border-gray-600 rounded-lg p-6 hover:shadow-md transition-all duration-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-[#0c7ff2] rounded-lg flex items-center justify-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="white" viewBox="0 0 256 256">
-                                                <path d="M208,40H48A16,16,0,0,0,32,56v58.78c0,89.61,75.82,119.34,91,124.39a15.53,15.53,0,0,0,10,0c15.2-5.05,91-34.78,91-124.39V56A16,16,0,0,0,208,40Zm0,74.79c0,78.42-66.35,104.62-80,109.18-13.53-4.51-80-30.69-80-109.18V56H208Z"></path>
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h3 class="text-[#0d141c] dark:text-white font-semibold text-lg transition-colors duration-300">Manage Servers</h3>
-                                            <p class="text-[#49739c] dark:text-gray-300 text-sm transition-colors duration-300">Configure bot settings for your Discord servers</p>
-                                        </div>
-                                        <div class="text-[#0c7ff2]">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                                                <path d="m221.66,133.66-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
+                    <!-- Enhanced Quick Stats with Loading States -->
+                    <section class="mb-8" aria-labelledby="stats-heading">
+                        <h2 id="stats-heading" class="sr-only">Bot Statistics</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 p-4">
+                            <!-- Server Count Card -->
+                            <div class="stat-card flex flex-1 gap-4 rounded-xl border border-[#cedbe8] dark:border-gray-600 bg-white dark:bg-gray-800 p-6 flex-col transition-colors duration-300">
+                                <div class="text-[#0c7ff2] dark:text-blue-400" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" fill="currentColor" viewBox="0 0 256 256">
+                                        <path d="M32,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H40A8,8,0,0,1,32,64Zm8,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Zm176,48H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
+                                    </svg>
                                 </div>
-                            </a>
+                                <div class="flex flex-col gap-2">
+                                    <h3 id="server-count" class="text-[#0d141c] dark:text-white text-2xl font-bold leading-tight" data-count="{{ stats.guilds.count if stats.guilds else (stats.server_count if stats.server_count else 0) }}">
+                                        {{ stats.guilds.count if stats.guilds else (stats.server_count if stats.server_count else 'N/A') }}
+                                        <span class="stats-indicator"></span>
+                                    </h3>
+                                    <p class="text-[#49739c] dark:text-gray-300 text-sm font-medium leading-normal">Total Servers</p>
+                                </div>
+                            </div>
                             
-                            <a href="/invite" target="_blank" rel="noopener" class="block">
-                                <div class="border border-[#cedbe8] dark:border-gray-600 rounded-lg p-6 hover:shadow-md transition-all duration-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="white" viewBox="0 0 256 256">
-                                                <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h3 class="text-[#0d141c] dark:text-white font-semibold text-lg transition-colors duration-300">Add Bot to Server</h3>
-                                            <p class="text-[#49739c] dark:text-gray-300 text-sm transition-colors duration-300">Invite BronxBot to a new Discord server</p>
-                                        </div>
-                                        <div class="text-green-600">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                                                <path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
+                            <!-- User Count Card -->
+                            <div class="stat-card flex flex-1 gap-4 rounded-xl border border-[#cedbe8] dark:border-gray-600 bg-white dark:bg-gray-800 p-6 flex-col transition-colors duration-300">
+                                <div class="text-green-600 dark:text-green-400" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" fill="currentColor" viewBox="0 0 256 256">
+                                        <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.7,87.63a8,8,0,0,1-10.07,5.37,8,8,0,0,1-5.37-10.07,80.69,80.69,0,0,0,0-53.86,8,8,0,0,1,15.44-4.14A96.69,96.69,0,0,1,250.7,195.63Zm-52.32-120a8,8,0,0,1,0,11.31A44,44,0,0,1,176,92a8,8,0,0,1,0-16,60,60,0,0,0,22.38-4.62A8,8,0,0,1,198.38,75.63Z"></path>
+                                    </svg>
                                 </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Shard Status (if available) -->
-                    {% if stats.shards %}
-                    <div class="p-4">
-                        <h2 class="text-[#0d141c] dark:text-white text-xl font-bold leading-tight mb-4 transition-colors duration-300">🔋 Shard Status</h2>
-                        <div class="bg-white dark:bg-gray-800 rounded-lg border border-[#cedbe8] dark:border-gray-600 p-6 transition-colors duration-300">
-                            <div class="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4">
-                                {% for shard in stats.shards %}
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-[#0d141c] dark:text-white transition-colors duration-300">{{ shard.id }}</div>
-                                    <div class="text-sm text-[#49739c] dark:text-gray-300 transition-colors duration-300">Shard {{ shard.id }}</div>
-                                    <div class="mt-2">
-                                        <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium {{ 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' if shard.status == 'online' else 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
-                                            {{ shard.status|title }}
-                                        </span>
-                                    </div>
+                                <div class="flex flex-col gap-2">
+                                    <h3 id="user-count" class="text-[#0d141c] dark:text-white text-2xl font-bold leading-tight" data-count="{{ stats.performance.user_count if stats.performance else (stats.user_count if stats.user_count else 0) }}">
+                                        {{ stats.performance.user_count if stats.performance else (stats.user_count if stats.user_count else 'N/A') }}
+                                    </h3>
+                                    <p class="text-[#49739c] dark:text-gray-300 text-sm font-medium leading-normal">Total Users</p>
                                 </div>
-                                {% endfor %}
+                            </div>
+                            
+                            <!-- Uptime Card -->
+                            <div class="stat-card flex flex-1 gap-4 rounded-xl border border-[#cedbe8] dark:border-gray-600 bg-white dark:bg-gray-800 p-6 flex-col transition-colors duration-300">
+                                <div class="text-purple-600 dark:text-purple-400" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" fill="currentColor" viewBox="0 0 256 256">
+                                        <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <h3 class="text-[#0d141c] dark:text-white text-2xl font-bold leading-tight" id="uptime" data-uptime="{{ (stats.uptime.total_seconds if stats.uptime else 0) }}">
+                                        {% if stats.uptime %}
+                                            {{ (stats.uptime.days if stats.uptime.days else 0) }}d {{ (stats.uptime.hours if stats.uptime.hours else 0) }}h {{ (stats.uptime.minutes if stats.uptime.minutes else 0) }}m
+                                        {% else %}
+                                            0d 0h 0m
+                                        {% endif %}
+                                    </h3>
+                                    <p class="text-[#49739c] dark:text-gray-300 text-sm font-medium leading-normal">Uptime</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Latency Card -->
+                            <div class="stat-card flex flex-1 gap-4 rounded-xl border border-[#cedbe8] dark:border-gray-600 bg-white dark:bg-gray-800 p-6 flex-col transition-colors duration-300">
+                                <div class="text-yellow-600 dark:text-yellow-400" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" fill="currentColor" viewBox="0 0 256 256">
+                                        <path d="M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71l84.62-90.66L136.16,94.43a8,8,0,0,0,5,9.06l52.8,19.8Z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <h3 class="text-[#0d141c] dark:text-white text-2xl font-bold leading-tight">
+                                        <span id="latency-value">{{ (stats.performance.latency if stats.performance else 'N/A') }}</span>
+                                        {% if stats.performance and stats.performance.latency != 'N/A' %}ms{% endif %}
+                                    </h3>
+                                    <p class="text-[#49739c] dark:text-gray-300 text-sm font-medium leading-normal">Latency</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
+
+                    <!-- Enhanced Quick Actions -->
+                    <section class="mb-8" aria-labelledby="actions-heading">
+                        <div class="p-4">
+                            <h2 id="actions-heading" class="text-[#0d141c] dark:text-white text-xl font-bold leading-tight mb-6 transition-colors duration-300">Quick Actions</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <a href="/servers" class="block action-card group">
+                                    <div class="border border-[#cedbe8] dark:border-gray-600 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transform hover:-translate-y-1">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-14 h-14 bg-gradient-to-br from-[#0c7ff2] to-[#0a6ad1] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" fill="white" viewBox="0 0 256 256">
+                                                    <path d="M208,40H48A16,16,0,0,0,32,56v58.78c0,89.61,75.82,119.34,91,124.39a15.53,15.53,0,0,0,10,0c15.2-5.05,91-34.78,91-124.39V56A16,16,0,0,0,208,40Zm0,74.79c0,78.42-66.35,104.62-80,109.18-13.53-4.51-80-30.69-80-109.18V56H208Z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-[#0d141c] dark:text-white font-semibold text-lg mb-1 transition-colors duration-300 group-hover:text-[#0c7ff2] dark:group-hover:text-blue-400">Manage Servers</h3>
+                                                <p class="text-[#49739c] dark:text-gray-300 text-sm transition-colors duration-300">Configure bot settings for your Discord servers</p>
+                                            </div>
+                                            <div class="text-[#0c7ff2] transform group-hover:translate-x-1 transition-transform duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                                                    <path d="m221.66,133.66-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                
+                                <a href="/invite" target="_blank" rel="noopener noreferrer" class="block action-card group">
+                                    <div class="border border-[#cedbe8] dark:border-gray-600 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transform hover:-translate-y-1">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-14 h-14 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" fill="white" viewBox="0 0 256 256">
+                                                    <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-[#0d141c] dark:text-white font-semibold text-lg mb-1 transition-colors duration-300 group-hover:text-green-600 dark:group-hover:text-green-400">Add Bot to Server</h3>
+                                                <p class="text-[#49739c] dark:text-gray-300 text-sm transition-colors duration-300">Invite BronxBot to a new Discord server</p>
+                                            </div>
+                                            <div class="text-green-600 transform group-hover:translate-x-1 transition-transform duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                                                    <path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Enhanced Shard Status -->
+                    {% if stats.shards %}
+                    <section class="mb-8" aria-labelledby="shards-heading">
+                        <div class="p-4">
+                            <h2 id="shards-heading" class="text-[#0d141c] dark:text-white text-xl font-bold leading-tight mb-6 transition-colors duration-300">🔋 Shard Status</h2>
+                            <div class="bg-white dark:bg-gray-800 rounded-xl border border-[#cedbe8] dark:border-gray-600 p-6 transition-colors duration-300">
+                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                                    {% for shard in stats.shards %}
+                                    <div class="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300">
+                                        <div class="text-2xl font-bold text-[#0d141c] dark:text-white transition-colors duration-300">{{ shard.id }}</div>
+                                        <div class="text-sm text-[#49739c] dark:text-gray-300 transition-colors duration-300 mb-2">Shard {{ shard.id }}</div>
+                                        <div class="mt-2">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' if shard.status == 'online' else 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
+                                                <span class="w-2 h-2 rounded-full {{ 'bg-green-400' if shard.status == 'online' else 'bg-red-400' }} mr-1"></span>
+                                                {{ shard.status|title }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                     {% endif %}
 
-                    <!-- Help Section -->
-                    <div class="p-4">
-                        <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-6 transition-colors duration-300">
-                            <h3 class="text-[#0d141c] dark:text-white font-semibold text-lg mb-2 transition-colors duration-300">Need Help?</h3>
-                            <p class="text-[#49739c] dark:text-gray-300 text-sm mb-4 transition-colors duration-300">Check out our resources to get the most out of BronxBot.</p>
-                            <div class="flex flex-wrap gap-3">
-                                <a href="https://discord.gg/jENm4phpgv" target="_blank" rel="noopener"
-                                   class="inline-flex items-center px-3 py-2 rounded-lg bg-[#5865F2] text-white text-sm font-medium hover:bg-[#4752C4] transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256" class="mr-2">
-                                        <path d="M104,140a12,12,0,1,1-12-12A12,12,0,0,1,104,140Zm60-12a12,12,0,1,0,12,12A12,12,0,0,0,164,128Zm74.45,64.9-67,29.71a16.17,16.17,0,0,1-21.71-9.1l-8.11-22q-6.72.45-13.63.46t-13.63-.46l-8.11,22a16.18,16.18,0,0,1-21.71,9.1l-67-29.71a15.93,15.93,0,0,1-9.06-18.51L38,58A16.07,16.07,0,0,1,48,42.73c21.81-10.64,50.17-17.76,80-17.73s58.2,7.09,80,17.73A16.07,16.07,0,0,1,218,58l29.53,117.38A15.93,15.93,0,0,1,238.45,192.9ZM203.61,62.75c-18.49-9.05-43.34-14.75-75.61-14.75s-57.12,5.7-75.61,14.75L32,178.26l67,29.71,8.11-22c18.12,1.72,37.64,1.72,55.76,0l8.11,22,67-29.71Z"></path>
-                                    </svg>
-                                    Support Server
-                                </a>
-                                <a href="https://github.com/BronxBot/Dashboard" target="_blank" rel="noopener"
-                                   class="inline-flex items-center px-3 py-2 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256" class="mr-2">
-                                        <path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"></path>
-                                    </svg>
-                                    Source Code
-                                </a>
+                    <!-- Enhanced Help Section -->
+                    <section class="mb-8" aria-labelledby="help-heading">
+                        <div class="p-4">
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-700 rounded-xl p-8 transition-colors duration-300">
+                                <h3 id="help-heading" class="text-[#0d141c] dark:text-white font-semibold text-xl mb-3 transition-colors duration-300">Need Help? 🤝</h3>
+                                <p class="text-[#49739c] dark:text-gray-300 text-base mb-6 transition-colors duration-300">Check out our resources to get the most out of BronxBot.</p>
+                                <div class="flex flex-wrap gap-4">
+                                    <a href="https://discord.gg/jENm4phpgv" target="_blank" rel="noopener noreferrer"
+                                       class="inline-flex items-center px-5 py-3 rounded-lg bg-discord text-white text-sm font-medium hover:bg-discord-hover transition-all duration-300 transform hover:scale-105 focus-ring">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="currentColor" viewBox="0 0 256 256" class="mr-2" aria-hidden="true">
+                                            <path d="M104,140a12,12,0,1,1-12-12A12,12,0,0,1,104,140Zm60-12a12,12,0,1,0,12,12A12,12,0,0,0,164,128Zm74.45,64.9-67,29.71a16.17,16.17,0,0,1-21.71-9.1l-8.11-22q-6.72.45-13.63.46t-13.63-.46l-8.11,22a16.18,16.18,0,0,1-21.71,9.1l-67-29.71a15.93,15.93,0,0,1-9.06-18.51L38,58A16.07,16.07,0,0,1,48,42.73c21.81-10.64,50.17-17.76,80-17.73s58.2,7.09,80,17.73A16.07,16.07,0,0,1,218,58l29.53,117.38A15.93,15.93,0,0,1,238.45,192.9ZM203.61,62.75c-18.49-9.05-43.34-14.75-75.61-14.75s-57.12,5.7-75.61,14.75L32,178.26l67,29.71,8.11-22c18.12,1.72,37.64,1.72,55.76,0l8.11,22,67-29.71Z"></path>
+                                        </svg>
+                                        Join Support Server
+                                    </a>
+                                    <a href="https://github.com/BronxBot/Dashboard" target="_blank" rel="noopener noreferrer"
+                                       class="inline-flex items-center px-5 py-3 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 focus-ring">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="currentColor" viewBox="0 0 256 256" class="mr-2" aria-hidden="true">
+                                            <path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"></path>
+                                        </svg>
+                                        View Source Code
+                                    </a>
+                                    <a href="/faq" class="inline-flex items-center px-5 py-3 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-all duration-300 transform hover:scale-105 focus-ring">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="currentColor" viewBox="0 0 256 256" class="mr-2" aria-hidden="true">
+                                            <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-16,0V128a8,8,0,0,1,16,0ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"></path>
+                                        </svg>
+                                        Browse FAQ
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
+                    </section>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/theme-handler.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/ui-components.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Enhanced JavaScript Loading -->
+    <script src="{{ url_for('static', filename='js/theme-handler.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/ui-components.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    
+    <!-- Performance monitoring (optional) -->
+    <script>
+        // Simple performance monitoring
+        window.addEventListener('load', function() {
+            if ('performance' in window) {
+                const loadTime = Math.round(performance.now());
+                console.log(`Page loaded in ${loadTime}ms`);
+            }
+        });
+        
+        // Error boundary for better debugging
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript error:', e.error);
+        });
+    </script>
 </body>
 </html>

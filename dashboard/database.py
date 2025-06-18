@@ -70,7 +70,7 @@ class Database:
     @contextmanager
     def get_collection(self, collection_name):
         """Context manager for database operations"""
-        if not self.available:
+        if not self.available or self.db is None:
             raise ConnectionError("Database not available")
         
         try:
@@ -167,6 +167,21 @@ class Database:
         except Exception as e:
             logger.error(f"Error getting user data: {e}")
             return {"balance": 0, "bank": 0}
+    
+    def get_bot_guilds(self):
+        """Get bot guild list from database"""
+        if not self.available:
+            return []
+        
+        try:
+            with self.get_collection('bot_stats') as collection:
+                stats_doc = collection.find_one({"_id": "global_stats"})
+                if stats_doc and "guild_list" in stats_doc:
+                    return stats_doc["guild_list"]
+                return []
+        except Exception as e:
+            logger.error(f"Error getting bot guilds: {e}")
+            return []
     
     def _get_default_stats(self):
         """Get default stats structure"""
